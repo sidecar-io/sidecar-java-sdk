@@ -1,0 +1,61 @@
+package io.sidecar.query;
+
+import io.sidecar.geo.Location;
+
+public class GeoDistance {
+
+    public final double lat;
+    public final double lon;
+    public final String distance;
+
+    public GeoDistance(Location location, final String distance) {
+        this.lat = location.getLat();
+        this.lon = location.getLon();
+        this.distance = distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        GeoDistance that = (GeoDistance) o;
+
+        if (Double.compare(that.lat, lat) != 0) {
+            return false;
+        }
+        if (Double.compare(that.lon, lon) != 0) {
+            return false;
+        }
+        if (!distance.equals(that.distance)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(lat);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(lon);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + distance.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GeoDistance {" +
+               "lat=" + lat +
+               ", log=" + lon +
+               ", distance=" + distance +
+               "} " + super.toString();
+    }
+}

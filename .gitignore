@@ -1,0 +1,13 @@
+#Temp files for editors
+.*swp
+.*swo
+
+#Maven
+target/
+
+#IntelliJ
+*.iml
+.idea
+
+#OSX Rubbish
+.DS_Store
