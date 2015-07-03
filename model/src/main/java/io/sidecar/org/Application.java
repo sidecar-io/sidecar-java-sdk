@@ -1,19 +1,19 @@
 package io.sidecar.org;
 
-import com.google.common.base.Preconditions;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Objects;
 import java.util.UUID;
+
+import com.google.common.base.Preconditions;
+import org.apache.commons.lang.StringUtils;
 
 public class Application {
 
     private UUID orgId;
     private UUID appId;
+    private String description;
     private String name;
 
-    public Application(UUID orgId, String name) {
+    public Application(UUID orgId, String name, String description) {
         Preconditions.checkNotNull(orgId);
         this.orgId = orgId;
 
@@ -23,12 +23,17 @@ public class Application {
         Preconditions.checkNotNull(name);
         Preconditions.checkArgument(StringUtils.isNotBlank(name));
         this.name = name;
+
+        Preconditions.checkNotNull(description);
+        Preconditions.checkArgument(StringUtils.isNotBlank(description));
+        this.description = description;
     }
 
     private Application(Builder builder) {
         appId = builder.appId;
         name = builder.name;
         orgId = builder.orgId;
+        description = builder.description;
     }
 
     public UUID getAppId() {
@@ -43,13 +48,18 @@ public class Application {
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     @Override
     public String toString() {
         return "Application{" +
-               "orgId=" + orgId +
-               ", appId=" + appId +
-               ", name=" + name +
-               "} " + super.toString();
+                "orgId=" + orgId +
+                ", appId=" + appId +
+                ", name=" + name +
+                ", description=" + description +
+                "} " + super.toString();
     }
 
     @Override
@@ -64,14 +74,15 @@ public class Application {
         Application that = (Application) o;
 
         return
-              Objects.equals(this.orgId, that.orgId) &&
-              Objects.equals(this.appId, that.appId) &&
-              Objects.equals(this.name, that.name);
+                Objects.equals(this.orgId, that.orgId) &&
+                        Objects.equals(this.appId, that.appId) &&
+                        Objects.equals(this.description, that.description) &&
+                        Objects.equals(this.name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(orgId, appId, name);
+        return Objects.hash(orgId, appId, name, description);
     }
 
     public static final class Builder {
@@ -79,6 +90,7 @@ public class Application {
         private UUID appId;
         private String name;
         private UUID orgId;
+        private String description;
 
         public Builder() {
         }
@@ -87,6 +99,7 @@ public class Application {
             appId = copy.appId;
             name = copy.name;
             orgId = copy.orgId;
+            description = copy.description;
         }
 
         public Builder appId(UUID appId) {
@@ -96,6 +109,11 @@ public class Application {
 
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
             return this;
         }
 
