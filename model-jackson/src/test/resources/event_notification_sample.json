@@ -1,0 +1,18 @@
+{
+  "id": "a0f7005e-f8b9-4e1b-b1ec-7a5bfd2c17ef",
+  "appId": "b0f7005e-f8b9-4e1b-b1ec-7a5bfd2c17ef",
+  "userId":  "b467e2b2-e3a5-4183-aa52-bd7d8be1a5e6",
+  "orgId": "ef5908eb-29a9-4533-9ae8-b4093d8a883d",
+  "ts": "2015-05-01T19:00:00.000Z",
+  "rule": {
+    "ruleId":"0bacbfb6-cdf7-4b67-a960-83fb30490ad1",
+    "name":"Value foo is greater than bar ",
+    "description":"Test if value foo is greater than bar",
+    "appId": "b0f7005e-f8b9-4e1b-b1ec-7a5bfd2c17ef",
+    "userId":  "b467e2b2-e3a5-4183-aa52-bd7d8be1a5e6",
+    "stream":  "stream_id",
+    "key":  "11",
+    "min":  "0",
+    "max":  "12.12"
+  }
+}

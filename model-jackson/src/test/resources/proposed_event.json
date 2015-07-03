@@ -1,0 +1,31 @@
+{
+    "id": "6323d967-a968-48b5-8ae2-1bd8ffb1ce72",
+    "deviceId": "dec0ebf0-4ff3-11e4-916c-0800200c9a66",
+    "ts": "2013-10-31T19:03:48.441Z",
+    "stream": "stream_id",
+    "location": {
+        "lat": 15.222,
+        "lon": 25.111
+    },
+    "readings": [
+        {
+            "key": "P2V",
+            "ts": "2013-10-31T19:03:47.441Z",
+            "value": "10"
+        },
+        {
+            "key": "P2V",
+            "ts": "2013-10-31T19:03:46.441Z",
+            "value": "20"
+        },
+        {
+            "key": "FOO",
+            "ts": "2013-10-31T19:03:45.441Z",
+            "value": "-199999"
+        }
+    ],
+    "keytags": {
+        "P2V": ["tag", "for", "only", "P2V", "readings"]
+    },
+    "tags": ["foo", "bar"]
+}

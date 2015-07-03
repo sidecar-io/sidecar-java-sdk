@@ -35,6 +35,7 @@
         <module>api-client</module>
         <module>model</module>
         <module>model-jackson</module>
+        <module>security</module>
         <module>parent</module>
     </modules>
 

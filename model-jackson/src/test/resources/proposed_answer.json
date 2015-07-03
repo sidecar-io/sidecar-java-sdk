@@ -1,0 +1,11 @@
+
+{
+    "symbol"        : "derived",
+    "stream"        : "theStream",
+    "value"         : 42,
+    "tags"          : ["tag1", "tag2"],
+    "dataPoints"    : [
+        {"ts": "2013-10-31T19:03:47.441Z", "value" : 21, "location" : {"lat" : 42.5, "lon" : 95.5} },
+        {"ts": "2013-10-31T19:03:47.441Z", "value" : 63, "location" : {"lat" : 42.5, "lon" : 95.5} }
+    ]
+}
