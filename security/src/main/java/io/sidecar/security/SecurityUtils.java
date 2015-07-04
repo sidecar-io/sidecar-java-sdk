@@ -3,10 +3,13 @@ package io.sidecar.security;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 public class SecurityUtils {
 
@@ -24,6 +27,7 @@ public class SecurityUtils {
 
     /**
      * Generates a String representation of an MD5 Checksum from a given String input.
+     *
      * @param input - A non-null String.
      * @return an MD5 checksum as a Hex encoded String.
      */
@@ -42,4 +46,35 @@ public class SecurityUtils {
             throw new IllegalStateException(e);
         }
     }
+
+    /**
+     * AES encrypt
+     */
+    @SuppressWarnings("unused")
+    public static String encrypt(String plainText, String key)
+            throws Exception {
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        byte[] plainTextByte = plainText.getBytes();
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encryptedByte = cipher.doFinal(plainTextByte);
+        Base64.Encoder encoder = Base64.getEncoder();
+        return encoder.encodeToString(encryptedByte);
+    }
+
+    /**
+     * AES decrypt
+     */
+    @SuppressWarnings("unused")
+    public static String decrypt(String encryptedText, String key)
+            throws Exception {
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        Base64.Decoder decoder = Base64.getDecoder();
+        byte[] encryptedTextByte = decoder.decode(encryptedText);
+        cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        byte[] decryptedByte = cipher.doFinal(encryptedTextByte);
+        return new String(decryptedByte);
+    }
 }
+
