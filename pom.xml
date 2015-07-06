@@ -8,7 +8,7 @@
     <version>1.0-SNAPSHOT</version>
     <artifactId>java-sdk-client</artifactId>
     <packaging>pom</packaging>
-    <name>sidecar.io :: Java SDK Top Level Model</name>
+    <name>Sidecar.io :: Java SDK Top Level Model</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
