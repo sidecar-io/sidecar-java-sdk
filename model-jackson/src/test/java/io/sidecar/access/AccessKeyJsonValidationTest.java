@@ -8,7 +8,7 @@ import static org.testng.Assert.assertEquals;
 
 public class AccessKeyJsonValidationTest {
 
-    ModelMapper mapper = new ModelMapper();
+    ModelMapper mapper = ModelMapper.instance();
 
     @Test(description = "Asserts that serializing an AccessKey to json and then deserializing it again produces an "
           + "equal object")

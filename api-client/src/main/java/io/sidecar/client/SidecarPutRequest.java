@@ -16,7 +16,7 @@ import java.net.URL;
 public class SidecarPutRequest extends SidecarRequest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarPostRequest.class);
-    private static final ObjectMapper mapper = new ModelMapper();
+    private static final ObjectMapper mapper = ModelMapper.instance();
 
     private URL url;
     private Object event;

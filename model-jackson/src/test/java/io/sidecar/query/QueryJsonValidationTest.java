@@ -23,7 +23,7 @@ public class QueryJsonValidationTest {
 
     private String validQueryAsJsonString;
     private ObjectNode queryAsObjectNode;
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = ModelMapper.instance();
 
     static Arg argFromJsonNode(JsonNode n) {
         return new Arg(n.path("key").asText(), n.path("value").asText());

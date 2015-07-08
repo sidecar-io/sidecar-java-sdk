@@ -32,7 +32,7 @@ public class SidecarClient {
 
     private final ClientConfig clientConfig;
     private final AccessKey accessKey;
-    private final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper = ModelMapper.instance();
 
     @SuppressWarnings("unused")
     public SidecarClient(AccessKey accessKey) {

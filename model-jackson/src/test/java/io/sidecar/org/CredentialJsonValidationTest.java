@@ -22,7 +22,7 @@ public class CredentialJsonValidationTest {
 
     private String validProvisionAsJson;
     private ObjectNode credentialAsObjectNode;
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = ModelMapper.instance();
 
     @BeforeMethod
     public void loadValidEventJsonAsString() throws Exception {

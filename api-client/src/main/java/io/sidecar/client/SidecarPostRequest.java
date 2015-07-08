@@ -14,7 +14,7 @@ import java.net.URL;
 
 public class SidecarPostRequest extends SidecarRequest {
 
-    private static final ModelMapper mapper = new ModelMapper();
+    private static final ModelMapper mapper = ModelMapper.instance();
 
     private static Logger LOGGER = LoggerFactory.getLogger(SidecarPostRequest.class);
     private URL url;

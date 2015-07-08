@@ -11,11 +11,10 @@ import static org.testng.Assert.assertEquals;
 
 public class NotificationJsonValidationTest {
 
-    ObjectMapper mapper = new ModelMapper();
+    ModelMapper mapper = ModelMapper.instance();
 
     String asJsonString;
     ObjectNode asObjectNode;
-
 
     @BeforeMethod
     public void loadValidEventJsonAsString() throws Exception {

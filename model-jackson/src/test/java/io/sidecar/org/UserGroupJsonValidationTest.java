@@ -10,19 +10,18 @@ import static org.testng.Assert.assertEquals;
 
 public class UserGroupJsonValidationTest {
 
-    private ModelMapper mapper = new ModelMapper();
+    private ModelMapper mapper = ModelMapper.instance();
 
-    @Test(description =
-          "Assert that serializing to json and deserializing back again produces an equal " +
-          "UserGroup object")
+    @Test(description = "Assert that serializing to json and deserializing back again produces an equal " +
+            "UserGroup object")
     public void toAndFromJsonProducesEqual() throws Exception {
         UserGroup original = new UserGroup.Builder()
-              .id(UUID.randomUUID())
-              .appendMember(new UserGroupMember(UUID.randomUUID(), UserGroupRole.ADMIN))
-              .appendDeviceId(UUID.randomUUID())
-              .appId(UUID.randomUUID())
-              .name("Test Group")
-              .build();
+                .id(UUID.randomUUID())
+                .appendMember(new UserGroupMember(UUID.randomUUID(), UserGroupRole.ADMIN))
+                .appendDeviceId(UUID.randomUUID())
+                .appId(UUID.randomUUID())
+                .name("Test Group")
+                .build();
 
         String asJson = mapper.writeValueAsString(original);
 

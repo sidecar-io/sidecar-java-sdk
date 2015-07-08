@@ -10,7 +10,8 @@ import java.util.UUID;
 import static org.testng.Assert.assertTrue;
 
 public class UserAnswerBucketJsonValidationTest {
-    private ModelMapper mapper = new ModelMapper();
+
+    private ModelMapper mapper = ModelMapper.instance();
 
     @Test(description = "Asserts that serializing a UserAnswerBucket containing RawEventsAnswers produces the proper" +
             "json")
