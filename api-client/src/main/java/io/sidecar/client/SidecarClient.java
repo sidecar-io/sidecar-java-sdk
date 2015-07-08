@@ -3,6 +3,7 @@ package io.sidecar.client;
 import static com.google.common.base.Throwables.propagate;
 import static io.sidecar.security.signature.SignatureVersion.Version.ONE;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import io.sidecar.query.UserAnswerBucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("unused")
 public class SidecarClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarClient.class);
@@ -42,16 +44,20 @@ public class SidecarClient {
         this.clientConfig = clientConfig;
     }
 
+    /**
+     * Given a username and password, obtain that user's AccessKey's for this application if that user exists.
+     * @param credential The user's credentials.
+     * @return AccessKeys for the user identified by the provided Credentials
+     */
     @SuppressWarnings("unused")
-    public AccessKey postAuthUser(Credential credential) {
-        String path = "/rest/v1/provision/application/auth";
-        URL baseUrl = clientConfig.getRestApiBasePath();
+    public AccessKey authenticateUser(Credential credential) {
 
         try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/auth");
             SidecarPostRequest sidecarPostRequest = new SidecarPostRequest.Builder(
                     accessKey.getKeyId(), "", accessKey.getSecret())
                     .withSignatureVersion(ONE)
-                    .withUrl(new URL(baseUrl.toString() + path))
+                    .withUrl(endpoint)
                     .withPayload(credential)
                     .build();
             SidecarResponse response = sidecarPostRequest.send();
@@ -71,23 +77,22 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public List<UserAnswerBucket> postUserQuery(String type, Query query) {
         String path = "/rest/v1/query/user/devices/" + type;
-        return _postUserBasedQuery(path, query);
+        return postUserBasedQuery(path, query);
     }
 
     public List<UserAnswerBucket> postUserDeviceQuery(String type, UUID deviceId, Query query) {
         String path = "/rest/v1/query/user/device/" + deviceId.toString() + "/" + type;
-        return _postUserBasedQuery(path, query);
+        return postUserBasedQuery(path, query);
     }
 
     @SuppressWarnings("unchecked")
-    private List<UserAnswerBucket> _postUserBasedQuery(String path, Query query) {
-        URL baseUrl = clientConfig.getRestApiBasePath();
-
+    private List<UserAnswerBucket> postUserBasedQuery(String path, Query query) {
         try {
+            URL endpoint = fullUrlForPath(path);
             SidecarPostRequest sidecarPostRequest = new SidecarPostRequest.Builder(
                     accessKey.getKeyId(), "", accessKey.getSecret())
                     .withSignatureVersion(ONE)
-                    .withUrl(new URL(baseUrl.toString() + path))
+                    .withUrl(endpoint)
                     .withPayload(query)
                     .build();
             SidecarResponse response = sidecarPostRequest.send();
@@ -105,14 +110,12 @@ public class SidecarClient {
 
 
     public UUID postEvent(Event event) {
-        String path = "/rest/v1/event";
-        URL baseUrl = clientConfig.getRestApiBasePath();
-
         try {
+            URL endpoint = fullUrlForPath("/rest/v1/event");
             SidecarPostRequest sidecarPostRequest = new SidecarPostRequest.Builder(
                     accessKey.getKeyId(), "", accessKey.getSecret())
                     .withSignatureVersion(ONE)
-                    .withUrl(new URL(baseUrl.toString() + path))
+                    .withUrl(endpoint)
                     .withPayload(event)
                     .build();
             SidecarResponse response = sidecarPostRequest.send();
@@ -136,14 +139,12 @@ public class SidecarClient {
             HashMap<String, String> payload = new HashMap<>();
             payload.put("name", newGroupName);
 
-            String path = "/rest/v1/provision/group";
-
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group");
             SidecarPostRequest
                     sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withPayload(payload)
                             .build();
 
@@ -161,13 +162,11 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public UUID userIdForUserAddress(String emailAddress) {
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
-            String path = "/rest/v1/provision/user/" + emailAddress;
-
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress);
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .build();
             SidecarResponse response = sidecarGetRequest.send();
             if (response.getStatusCode() == 200) {
@@ -183,14 +182,12 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public UserGroup addUserToUserGroup(UserGroup userGroup, UserGroupMember member) {
-        String userGroupId = userGroup.getId().toString();
-        String path = "/rest/v1/provision/group/" + userGroupId + "/members";
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + userGroup.getId() + "/members");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withPayload(member)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
@@ -207,13 +204,12 @@ public class SidecarClient {
 
     @SuppressWarnings({"unchecked","unused"})
     public List<UUID> getGroupsForUser(String emailAddress) {
-        String path = "/rest/v1/provision/user/" + emailAddress + "/groups";
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress + "/groups");
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .build();
             SidecarResponse response = sidecarGetRequest.send();
 
@@ -229,15 +225,14 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public void provisionDevice(UUID deviceId) {
-        String path = "/rest/v1/provision/user/device";
         Map<String, String> metaData = new HashMap<>();
         metaData.put("deviceId", deviceId.toString());
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withPayload(metaData)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
@@ -255,14 +250,11 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
         try {
-            String path = "/rest/v1/provision/application/user";
             Credential credential = new Credential(emailAddress, password);
-
-            URL baseUrl = clientConfig.getRestApiBasePath();
-            SidecarPostRequest
-                    sidecarRequest =
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
+            SidecarPostRequest sidecarRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withSignatureVersion(ONE)
                             .withPayload(credential)
                             .build();
@@ -279,13 +271,12 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public void provisionDeviceToken(String platform, String deviceToken) {
-        String path = "/rest/v1/provision/user/notifications/token";
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/token");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withPayload(new PlatformDeviceToken.Builder()
                                     .deviceToken(deviceToken)
                                     .platform(platform).build())
@@ -304,7 +295,7 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public UUID addNotificationRule(String name, String description, String stream, String key, Double min, Double max) {
-        String path = "/rest/v1/provision/user/notifications/rule";
+
 
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("name", name);
@@ -315,19 +306,18 @@ public class SidecarClient {
         payload.put("max", max);
 
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rule");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .withPayload(payload)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
             // check for an OK response code
             if (response.getStatusCode() == 200) {
-                return UUID
-                        .fromString(mapper.readTree(response.getBody()).get("id").textValue());
+                return UUID.fromString(mapper.readTree(response.getBody()).get("id").textValue());
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -339,14 +329,12 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public NotificationRule getNotificationRule(UUID ruleId) {
-        String path = "/rest/v1/provision/user/notifications/rule/" + ruleId.toString();
-
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
             SidecarGetRequest sidecarPostRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
@@ -363,14 +351,12 @@ public class SidecarClient {
 
     @SuppressWarnings({"unused","unchecked"})
     public List<NotificationRule> getNotificationRules(UUID appId, UUID userId) {
-        String path = "/rest/v1/provision/user/notifications/rules";
-
         try {
-            URL baseUrl = clientConfig.getRestApiBasePath();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rules");
             SidecarGetRequest sidecarPostRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
-                            .withUrl(new URL(baseUrl.toString() + path))
+                            .withUrl(endpoint)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
@@ -384,7 +370,16 @@ public class SidecarClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-
     }
+
+    private URL fullUrlForPath(String path) {
+        try {
+            URL baseUrl = clientConfig.getRestApiBasePath();
+            return new URL(baseUrl.toString() + path);
+        } catch (MalformedURLException e) {
+            throw propagate(e);
+        }
+    }
+
 
 }
