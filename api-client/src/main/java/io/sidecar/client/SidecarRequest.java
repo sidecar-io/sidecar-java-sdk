@@ -1,24 +1,22 @@
 package io.sidecar.client;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import io.sidecar.security.AuthorizationParmeterConstants;
 import io.sidecar.security.SecurityUtils;
 import io.sidecar.security.signature.Signature;
 import io.sidecar.security.signature.SignatureVersion;
 import io.sidecar.security.signature.SignatureVersionOne;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpMessage;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 abstract class SidecarRequest {
+    public static final MediaType JSON_MEDIA_TYPE = MediaType.parse("application/json; charset=utf-8");
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarRequest.class);
+    private static final OkHttpClient httpClient = new OkHttpClient();
 
     protected String accessKey;
     protected String secret;
@@ -28,28 +26,20 @@ abstract class SidecarRequest {
 
     abstract SidecarResponse send() throws Exception;
 
-    protected SidecarResponse send(HttpUriRequest httpUriRequest) {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-
-        try (CloseableHttpResponse response = httpclient.execute(httpUriRequest)) {
-            int statusCode = response.getStatusLine().getStatusCode();
-            HttpEntity entity = response.getEntity();
-            String payload = null;
-            // handles 204 no content responses.
-            if (entity != null) {
-                payload = EntityUtils.toString(entity);
-            }
-            return new SidecarResponse(statusCode, payload);
+    protected SidecarResponse send(Request httpReq) {
+        try {
+            Response resp = httpClient.newCall(httpReq).execute();
+            return new SidecarResponse(resp.code(), resp.body().string());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected void signHeaders(String httpMethod, String URI, HttpMessage request) {
+    protected void signHeaders(String httpMethod, String URI, Request.Builder request) {
         signHeaders(httpMethod, URI, request, null);
     }
 
-    protected void signHeaders(String httpMethod, String uri, HttpMessage request, String payload) {
+    protected void signHeaders(String httpMethod, String uri, Request.Builder request, String payload) {
         String md5 = null;
 
         LOGGER.debug("Beging to sign the payload");
@@ -77,8 +67,8 @@ abstract class SidecarRequest {
 
         LOGGER.debug("Begin adding the required header values");
         // add required headers
-        request.addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType());
-        LOGGER.debug("Content-Type = " + ContentType.APPLICATION_JSON.getMimeType());
+        request.addHeader("Content-Type", "application/json");
+        LOGGER.debug("Content-Type = " + "application/json");
         // date
         request.addHeader(AuthorizationParmeterConstants.SC_API_DATE_HEADER, requestDate);
         LOGGER.debug(AuthorizationParmeterConstants.SC_API_DATE_HEADER + " = " + requestDate);

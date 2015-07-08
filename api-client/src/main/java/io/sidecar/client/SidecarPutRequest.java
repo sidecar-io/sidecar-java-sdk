@@ -2,10 +2,11 @@ package io.sidecar.client;
 
 import static io.sidecar.util.DateUtils.nowUtc;
 
+import com.google.common.base.Throwables;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import io.sidecar.jackson.ModelMapper;
 import io.sidecar.security.signature.SignatureVersion;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,18 +27,18 @@ import java.net.URL;
             String payloadAsJson = mapper.writeValueAsString(event);
 
             LOGGER.debug("Creating sidecar PUT request... " + url);
-            LOGGER.debug("JSON payload is {}", payloadAsJson);
+            LOGGER.debug("JSON_MEDIA_TYPE payload is {}", payloadAsJson);
 
-            HttpPut httpPut = new HttpPut(url.toURI());
-            httpPut.setEntity(new StringEntity(payloadAsJson));
+            Request.Builder request = new Request.Builder()
+                    .url(url)
+                    .put(RequestBody.create(JSON_MEDIA_TYPE, payloadAsJson));
 
             // add the required headers for signing the request
-            signHeaders(HttpPut.METHOD_NAME, url.getPath(), httpPut, payloadAsJson);
+            signHeaders("PUT", url.getPath(), request, payloadAsJson);
 
-            LOGGER.debug("Sending sidecar PUT request: {} ", httpPut);
-            return send(httpPut);
+            return send(request.build());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw Throwables.propagate(e);
         }
     }
 

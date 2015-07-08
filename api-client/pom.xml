@@ -28,10 +28,9 @@
             <groupId>io.sidecar</groupId>
             <artifactId>security</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>com.squareup.okhttp</groupId>
+            <artifactId>okhttp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

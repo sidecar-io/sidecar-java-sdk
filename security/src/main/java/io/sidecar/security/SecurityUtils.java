@@ -1,18 +1,16 @@
 package io.sidecar.security;
 
-
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+import com.google.common.base.Throwables;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 public class SecurityUtils {
 
@@ -25,7 +23,11 @@ public class SecurityUtils {
      * @return * The base64 encoded string representation of rawData.
      */
     public static String encodeBase64(byte[] rawData) {
-        return DatatypeConverter.printBase64Binary(rawData);
+        try {
+            return new String(Base64.encodeBase64(rawData), "UTF-8");
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     /**
@@ -44,7 +46,7 @@ public class SecurityUtils {
             digest.update(input.getBytes(), 0, input.length());
 
             //Converts message digest value in base 16 (hex)
-            return Hex.encodeHexString(digest.digest());
+            return String.copyValueOf(Hex.encodeHex(digest.digest()));
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
@@ -60,9 +62,8 @@ public class SecurityUtils {
         Cipher cipher = Cipher.getInstance("AES");
         byte[] plainTextByte = plainText.getBytes();
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedByte = cipher.doFinal(plainTextByte);
-        Base64.Encoder encoder = Base64.getEncoder();
-        return encoder.encodeToString(encryptedByte);
+        byte[] encryptedBytes = cipher.doFinal(plainTextByte);
+        return encodeBase64(encryptedBytes);
     }
 
     /**
@@ -73,10 +74,9 @@ public class SecurityUtils {
             throws Exception {
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "AES");
         Cipher cipher = Cipher.getInstance("AES");
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] encryptedTextByte = decoder.decode(encryptedText);
+        byte[] encryptedTextBytes = Base64.decodeBase64(encryptedText.getBytes(Charset.forName("UTF-8")));
         cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        byte[] decryptedByte = cipher.doFinal(encryptedTextByte);
+        byte[] decryptedByte = cipher.doFinal(encryptedTextBytes);
         return new String(decryptedByte);
     }
 }

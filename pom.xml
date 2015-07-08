@@ -35,8 +35,25 @@
         <module>api-client</module>
         <module>model</module>
         <module>model-jackson</module>
-        <module>security</module>
         <module>parent</module>
+        <module>security</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>android-sample</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>android-sample</module>
+                <module>api-client</module>
+                <module>model</module>
+                <module>model-jackson</module>
+                <module>parent</module>
+                <module>security</module>
+            </modules>
+        </profile>
+    </profiles>
 
 </project>

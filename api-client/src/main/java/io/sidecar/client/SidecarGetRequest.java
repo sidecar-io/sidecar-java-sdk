@@ -1,13 +1,11 @@
 package io.sidecar.client;
 
+import com.squareup.okhttp.Request;
 import io.sidecar.security.signature.SignatureVersion;
 
-import org.apache.http.client.methods.HttpGet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import static io.sidecar.util.DateUtils.nowUtc;
@@ -16,17 +14,16 @@ class SidecarGetRequest extends SidecarRequest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarGetRequest.class);
 
-    private URI uri;
+    private URL url;
 
     @Override
     SidecarResponse send() {
-        LOGGER.debug("Creating sidecar GET request..." + uri);
-        HttpGet httpGet = new HttpGet(uri);
+        LOGGER.debug("Creating sidecar GET request..." + url);
+        Request.Builder req = new Request.Builder().url(url);
 
-        // add the required headers
-        signHeaders(HttpGet.METHOD_NAME, uri.getPath(), httpGet);
+        signHeaders("GET", url.getPath(), req);
 
-        return send(httpGet);
+        return send(req.build());
     }
 
     public static class Builder {
@@ -46,12 +43,8 @@ class SidecarGetRequest extends SidecarRequest {
         }
 
         public Builder withUrl(URL url) {
-            try {
-                sidecarRequest.uri = url.toURI();
-                return this;
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
+            sidecarRequest.url = url;
+            return this;
         }
 
         public SidecarGetRequest build() {

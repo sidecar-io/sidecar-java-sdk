@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -231,7 +232,6 @@ public class EventJsonValidationTest {
         assertEquals(keytags.size(), 1);
         assertEquals(keytags.get(0).getKey(), "P2V");
         assertEquals(keytags.get(0).getTags(), ImmutableSet.of("tag", "for", "only", "P2V", "readings"));
-
     }
 
     @Test(description = "Assert that event.ts does not change after serializing and deserializing again")

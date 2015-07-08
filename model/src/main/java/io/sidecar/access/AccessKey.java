@@ -1,9 +1,14 @@
 package io.sidecar.access;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  * Used during authentication by Shiro and during Provisioning
  */
-public final class AccessKey {
+public final class AccessKey implements Serializable {
+
+    private static final long serialVersionUID = 0L;
 
     private final String secret;
     private final String keyId;
@@ -27,30 +32,16 @@ public final class AccessKey {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         AccessKey accessKey = (AccessKey) o;
-
-        if (keyId != null ? !keyId.equals(accessKey.keyId) : accessKey.keyId != null) {
-            return false;
-        }
-        if (secret != null ? !secret.equals(accessKey.secret) : accessKey.secret != null) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(secret, accessKey.secret) &&
+                Objects.equals(keyId, accessKey.keyId);
     }
 
     @Override
     public int hashCode() {
-        int result = secret != null ? secret.hashCode() : 0;
-        result = 31 * result + (keyId != null ? keyId.hashCode() : 0);
-        return result;
+        return Objects.hash(secret, keyId);
     }
 
     @Override

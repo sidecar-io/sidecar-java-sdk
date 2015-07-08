@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+configurations.all( {
+    resolutionStrategy.cacheChangingModulesFor(1, 'minutes')
+    resolutionStrategy.cacheDynamicVersionsFor(1, 'minutes')
+})
+
+repositories {
+    mavenLocal()
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.0 rc2"
+
+    defaultConfig {
+        applicationId "sidecar.io.sidecarandroidsample"
+        minSdkVersion 15
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/services/com.fasterxml.jackson.databind.Module'
+        exclude 'log4j.properties'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile('io.sidecar:api-client:1.0-SNAPSHOT') {
+        exclude group: 'commons-collections', module: 'commons-collections'
+    }
+}
