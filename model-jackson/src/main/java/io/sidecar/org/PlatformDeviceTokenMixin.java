@@ -6,7 +6,7 @@ abstract class PlatformDeviceTokenMixin {
 
     @SuppressWarnings("unused")
         //Used by Jackson
-    PlatformDeviceTokenMixin(@JsonProperty("platform") String platform,
+    PlatformDeviceTokenMixin(@JsonProperty("platform") PlatformType platform,
                          @JsonProperty("deviceToken") String deviceToken) {
     }
 }

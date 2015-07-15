@@ -270,16 +270,14 @@ public class SidecarClient {
     }
 
     @SuppressWarnings("unused")
-    public void provisionDeviceToken(String platform, String deviceToken) {
+    public void addNotificationToken(PlatformDeviceToken token) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/token");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
                             .withUrl(endpoint)
-                            .withPayload(new PlatformDeviceToken.Builder()
-                                    .deviceToken(deviceToken)
-                                    .platform(platform).build())
+                            .withPayload(token)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
