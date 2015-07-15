@@ -4,10 +4,17 @@ import org.apache.commons.lang.StringUtils;
 
 public class SignatureVersionOne extends SignatureVersion {
 
-    private String contentMd5;
-    private String dateString;
-    private String method;
-    private String uri;
+    private final String contentMd5;
+    private final String dateString;
+    private final String method;
+    private final String uri;
+
+    private SignatureVersionOne(Builder b) {
+        contentMd5 = b.contentMd5;
+        dateString = b.dateString;
+        method = b.method;
+        uri = b.uri;
+    }
 
     @Override
     protected Version getVersion() {
@@ -21,6 +28,7 @@ public class SignatureVersionOne extends SignatureVersion {
         s.append(method).append(DELIMITER);
         s.append(uri).append(DELIMITER);
         s.append(dateString).append(DELIMITER);
+
         // only applies to PUT or POST
         if (StringUtils.isNotEmpty(contentMd5)) {
             s.append(contentMd5).append(DELIMITER);
@@ -30,19 +38,22 @@ public class SignatureVersionOne extends SignatureVersion {
 
     public static class Builder {
 
-        public SignatureVersionOne signatureVersionOne;
+        private String contentMd5;
+        private String dateString;
+        private String method;
+        private String uri;
 
         public Builder() {
-            signatureVersionOne = new SignatureVersionOne();
+
         }
 
         public Builder withDate(String dateString) {
-            signatureVersionOne.dateString = dateString;
+            this.dateString = dateString;
             return this;
         }
 
         public Builder withContentMd5(String contentMd5) {
-            signatureVersionOne.contentMd5 = contentMd5;
+            this.contentMd5 = contentMd5;
             return this;
         }
 
@@ -50,17 +61,17 @@ public class SignatureVersionOne extends SignatureVersion {
          * the URI path, ie "/event" -- or everything between hostname and "?" in the URL
          */
         public Builder withURI(String uri) {
-            signatureVersionOne.uri = uri;
+            this.uri = uri;
             return this;
         }
 
         public Builder withHttpMethod(String httpMethod) {
-            signatureVersionOne.method = httpMethod;
+            this.method = httpMethod;
             return this;
         }
 
         public SignatureVersionOne build() {
-            return signatureVersionOne;
+            return new SignatureVersionOne(this);
         }
     }
 }
