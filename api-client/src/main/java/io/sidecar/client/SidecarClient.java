@@ -370,6 +370,46 @@ public class SidecarClient {
         }
     }
 
+    public boolean checkApplicationKeyset() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/status");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return true;
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    public boolean checkUserKeyset() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/status");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return true;
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
     private URL fullUrlForPath(String path) {
         try {
             URL baseUrl = clientConfig.getRestApiBasePath();

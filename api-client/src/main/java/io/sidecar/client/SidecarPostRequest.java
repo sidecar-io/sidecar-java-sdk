@@ -3,14 +3,14 @@ package io.sidecar.client;
 
 import static io.sidecar.util.DateUtils.nowUtc;
 
+import java.net.URL;
+
 import io.sidecar.jackson.ModelMapper;
 import io.sidecar.security.signature.SignatureVersion;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
 
 public class SidecarPostRequest extends SidecarRequest {
 
