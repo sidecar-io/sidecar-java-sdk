@@ -197,19 +197,19 @@ public class EventJsonValidationTest {
 
     @Test(description = "Assert that the tags key is excluded if empty when deserializing")
     public void serializationRemovesNullKeyTags() throws Exception {
-        eventAsObjectNode.remove("keyTags");
+        eventAsObjectNode.remove("keytags");
         Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
 
         JsonNode serialized = mapper.readTree(mapper.writeValueAsBytesUnchecked(e));
-        JsonNode keyTagsPath = serialized.path("keyTags");
+        JsonNode keyTagsPath = serialized.path("keytags");
         assertTrue(MissingNode.getInstance().equals(keyTagsPath));
     }
 
     @Test(description = "Assert that the keytags key can be missing")
     public void keytagsCanBeMissing() throws Exception {
-        eventAsObjectNode.remove("keyTags");
+        eventAsObjectNode.remove("keytags");
         Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
-        assertEquals(e.getKeyTags(), ImmutableSet.of());
+        assertEquals(e.getKeytags(), ImmutableSet.of());
     }
 
     @Test(description = "Assert that we can serialize and deserialize and get an equals, but not same, object")
@@ -226,7 +226,7 @@ public class EventJsonValidationTest {
     public void validateKeyTagsAsListOfKeyTags() throws Exception {
         Event event = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
 
-        ImmutableList<KeyTag> keytags = event.getKeyTags();
+        ImmutableList<KeyTag> keytags = event.getKeytags();
 
         assertEquals(keytags.size(), 1);
         assertEquals(keytags.get(0).getKey(), "P2V");

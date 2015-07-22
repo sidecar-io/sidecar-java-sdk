@@ -28,7 +28,7 @@ public class ModelTestUtils {
                 .tags(ImmutableSet.<String>of())
                 .location(new Location(47.6014, -122.33))
                 .readings(ImmutableList.of(reading))
-                .keyTags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))))
+                .keytags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))))
                 .build();
     }
 
