@@ -177,6 +177,20 @@ public class EventJsonValidationTest {
         assertEquals(e.getTags(), ImmutableSet.of());
     }
 
+    @Test(description = "Assert that the tags key can be missing")
+    public void tagsCanBeMissing() throws Exception {
+        eventAsObjectNode.remove("tags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+        assertEquals(e.getTags(), ImmutableSet.of());
+    }
+
+    @Test(description = "Assert that the keytags key can be missing")
+    public void keytagsCanBeMissing() throws Exception {
+        eventAsObjectNode.remove("keyTags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+        assertEquals(e.getKeyTags(), ImmutableSet.of());
+    }
+
     @Test(description = "Assert that we can serialize and deserialize and get an equals, but not same, object")
     public void toJsonAndBackAndStillEquals() throws Exception {
         Event original = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
