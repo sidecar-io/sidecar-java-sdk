@@ -97,7 +97,7 @@ public final class Event {
         }));
     }
 
-    public void checkAllKeyTagsKeysAreValid() {
+    private void checkAllKeyTagsKeysAreValid() {
         if (keyTags == null) {
             return;
         }
