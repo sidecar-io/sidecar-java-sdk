@@ -1,17 +1,22 @@
 package io.sidecar.event;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.sidecar.geo.Location;
 import org.joda.time.DateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(NON_NULL)
 @SuppressWarnings("unused") //Used by Jackson
 abstract class EventMixin {
 
@@ -33,4 +38,14 @@ abstract class EventMixin {
 
     @JsonGetter("ts")
     abstract String getTimestampAsIso8601String();
+
+    @JsonGetter("tags")
+    abstract Set<String> getTagsNull();
+
+    @JsonGetter("keyTags")
+    abstract List<KeyTag> getKeyTagsNull();
+
+
+
+
 }
