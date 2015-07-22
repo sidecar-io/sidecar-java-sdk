@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
@@ -175,6 +176,40 @@ public class EventJsonValidationTest {
         eventAsObjectNode.set("tags", JsonNodeFactory.instance.nullNode());
         Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
         assertEquals(e.getTags(), ImmutableSet.of());
+    }
+
+    @Test(description = "Assert that the tags key can be missing")
+    public void tagsCanBeMissing() throws Exception {
+        eventAsObjectNode.remove("tags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+        assertEquals(e.getTags(), ImmutableSet.of());
+    }
+
+    @Test(description = "Assert that the tags key is excluded if empty when deserializing")
+    public void serializationRemovesNullTags() throws Exception {
+        eventAsObjectNode.remove("tags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+
+        JsonNode serialized = mapper.readTree(mapper.writeValueAsBytesUnchecked(e));
+        JsonNode tagsPath = serialized.path("tags");
+        assertTrue(MissingNode.getInstance().equals(tagsPath));
+    }
+
+    @Test(description = "Assert that the tags key is excluded if empty when deserializing")
+    public void serializationRemovesNullKeyTags() throws Exception {
+        eventAsObjectNode.remove("keyTags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+
+        JsonNode serialized = mapper.readTree(mapper.writeValueAsBytesUnchecked(e));
+        JsonNode keyTagsPath = serialized.path("keyTags");
+        assertTrue(MissingNode.getInstance().equals(keyTagsPath));
+    }
+
+    @Test(description = "Assert that the keytags key can be missing")
+    public void keytagsCanBeMissing() throws Exception {
+        eventAsObjectNode.remove("keyTags");
+        Event e = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+        assertEquals(e.getKeyTags(), ImmutableSet.of());
     }
 
     @Test(description = "Assert that we can serialize and deserialize and get an equals, but not same, object")

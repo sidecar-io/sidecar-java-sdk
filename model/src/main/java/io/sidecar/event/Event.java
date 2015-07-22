@@ -5,8 +5,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.sidecar.util.CollectionUtils.filterNulls;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.CharMatcher;
@@ -58,8 +60,8 @@ public final class Event {
         checkNotNull(readings);
         this.readings = filterNulls(readings);
 
-        this.tags = (tags == null) ? ImmutableSet.<String>of() : filterBlankTags(tags);
-        this.keyTags = (keyTags == null) ? ImmutableList.<KeyTag>of() : filterBlankKeyTags(keyTags);
+        this.tags = (tags == null) ? null : filterBlankTags(tags);
+        this.keyTags = (keyTags == null) ? null : filterBlankKeyTags(keyTags);
         checkAllTagsHaveNoWhitespace();
         checkAllKeyTagsKeysAreValid();
     }
@@ -83,8 +85,8 @@ public final class Event {
     }
 
     private void checkAllTagsHaveNoWhitespace() {
-        List<String> allTags = Lists.newArrayList(tags);
-        for (KeyTag keyTag : keyTags) {
+        List<String> allTags = Lists.newArrayList((tags != null) ? tags : Collections.<String>emptyList());
+        for (KeyTag keyTag : (keyTags != null) ? keyTags : Collections.<KeyTag>emptyList() ) {
             allTags.addAll(keyTag.getTags());
         }
         checkArgument(Iterables.all(allTags, new Predicate<String>() {
@@ -95,7 +97,10 @@ public final class Event {
         }));
     }
 
-    public void checkAllKeyTagsKeysAreValid() {
+    private void checkAllKeyTagsKeysAreValid() {
+        if (keyTags == null) {
+            return;
+        }
         for (KeyTag keyTag : keyTags) {
             checkArgument(ModelUtils.isValidReadingKey(keyTag.getKey()), keyTag.getKey() + " is not a valid key.");
         }
@@ -144,6 +149,11 @@ public final class Event {
     }
 
     public ImmutableSet<String> getTags() {
+        return (tags != null) ? tags : ImmutableSet.<String>of();
+    }
+
+    @SuppressWarnings("unused")
+    private Set<String> getTagsNull() {
         return tags;
     }
 
@@ -168,6 +178,11 @@ public final class Event {
     }
 
     public ImmutableList<KeyTag> getKeyTags() {
+        return (keyTags != null) ? keyTags : ImmutableList.<KeyTag>of();
+    }
+
+    @SuppressWarnings("unused")
+    private List<KeyTag> getKeyTagsNull() {
         return keyTags;
     }
 
