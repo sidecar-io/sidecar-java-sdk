@@ -1,22 +1,19 @@
 package io.sidecar.event;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
-
-import org.apache.commons.lang.RandomStringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.testng.annotations.Test;
-
-import java.util.Collection;
-import java.util.UUID;
-
-import io.sidecar.geo.Location;
-
 import static com.google.common.collect.Lists.newArrayList;
 import static java.util.Collections.singletonList;
 import static java.util.UUID.randomUUID;
 import static org.testng.Assert.assertEquals;
+
+import java.util.UUID;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
+import io.sidecar.geo.Location;
+import org.apache.commons.lang.RandomStringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.testng.annotations.Test;
 
 public class EventTest {
 
@@ -29,9 +26,10 @@ public class EventTest {
                 .tags(Sets.newHashSet("foo", "bar"))
                 .location(new Location(0.0, 0.0))
                 .readings(singletonList(new Reading("key", DateTime.now(DateTimeZone.UTC), 1L)))
-                .keyTags(new ImmutableMap.Builder<String, Collection<String>>()
-                        .put("key", Sets.newHashSet("keytag"))
-                        .build());
+                .keyTags(new ImmutableList.Builder<KeyTag>()
+                                .add(new KeyTag("key", Sets.newHashSet("keytag")))
+                                .build()
+                );
     }
 
     @Test(description = "Assert that an Event created with expected values passes validation on construction")
@@ -92,8 +90,7 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainSpaces() {
         createBuilderWithExpectedValues()
-                .keyTags(new ImmutableMap.Builder<String, Collection<String>>()
-                        .put("key", Sets.newHashSet("key tag")).build())
+                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key tag"))))
                 .build();
 
     }
@@ -102,8 +99,7 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainNewLines() {
         createBuilderWithExpectedValues()
-                .keyTags(new ImmutableMap.Builder<String, Collection<String>>()
-                        .put("key", Sets.newHashSet("key\ntag")).build())
+                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ntag"))))
                 .build();
     }
 
@@ -111,16 +107,14 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainTabs() {
         createBuilderWithExpectedValues()
-                .keyTags(new ImmutableMap.Builder<String, Collection<String>>()
-                        .put("key", Sets.newHashSet("key\ttag")).build())
+                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ttag"))))
                 .build();
     }
 
     @Test(description = "A key tag can't be over 40 characters", expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantHaveOver40Chars() {
         createBuilderWithExpectedValues()
-                .keyTags(new ImmutableMap.Builder<String, Collection<String>>()
-                        .put(RandomStringUtils.randomAlphabetic(41), Sets.newHashSet("foo")).build())
+                .keyTags(newArrayList(new KeyTag(RandomStringUtils.randomAlphabetic(41), Sets.newHashSet("foo"))))
                 .build();
     }
 

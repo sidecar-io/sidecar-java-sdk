@@ -1,15 +1,13 @@
 package io.sidecar.event;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import io.sidecar.geo.Location;
 import org.joda.time.DateTime;
 
@@ -24,7 +22,7 @@ abstract class EventMixin {
                        @JsonProperty("tags") Collection<String> tags,
                        @JsonProperty("location") Location location,
                        @JsonProperty("readings") List<Reading> readings,
-                       @JsonProperty("keytags") Map<String, Collection<String>> keyTags) {
+                       @JsonProperty("keyTags") List<KeyTag> keyTags) {
     }
 
     @JsonIgnore

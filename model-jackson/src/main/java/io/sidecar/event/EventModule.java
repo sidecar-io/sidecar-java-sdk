@@ -18,6 +18,7 @@ public class EventModule extends SimpleModule {
         context.setMixInAnnotations(Location.class, LocationMixin.class);
         context.setMixInAnnotations(Event.class, EventMixin.class);
         context.setMixInAnnotations(EventWithIds.class, EventWithIdsMixin.class);
+        context.setMixInAnnotations(KeyTag.class, KeyTagMixin.class);
     }
 
 }

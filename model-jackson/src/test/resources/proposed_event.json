@@ -24,8 +24,11 @@
             "value": "-199999"
         }
     ],
-    "keytags": {
-        "P2V": ["tag", "for", "only", "P2V", "readings"]
-    },
+    "keyTags": [
+        {
+            "key": "P2V",
+            "tags": ["tag", "for", "only", "P2V", "readings"]
+        }
+    ],
     "tags": ["foo", "bar"]
 }

@@ -1,17 +1,17 @@
 package io.sidecar;
 
+import java.util.UUID;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import io.sidecar.credential.Credential;
 import io.sidecar.event.Event;
+import io.sidecar.event.KeyTag;
 import io.sidecar.event.Reading;
 import io.sidecar.geo.Location;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-import java.util.Collection;
-import java.util.UUID;
 
 public class ModelTestUtils {
 
@@ -28,7 +28,7 @@ public class ModelTestUtils {
                 .tags(ImmutableSet.<String>of())
                 .location(new Location(47.6014, -122.33))
                 .readings(ImmutableList.of(reading))
-                .keyTags(ImmutableMap.<String, Collection<String>>of())
+                .keyTags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))))
                 .build();
     }
 

@@ -4,10 +4,14 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.sidecar.util.CollectionUtils.filterNulls;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -16,13 +20,6 @@ import io.sidecar.geo.Location;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 
 public final class Event {
 
@@ -33,7 +30,7 @@ public final class Event {
     private final Location location;
     private final ImmutableList<Reading> readings;
     private final ImmutableSet<String> tags;
-    private final ImmutableMap<String, ImmutableSet<String>> keyTags;
+    private final ImmutableList<KeyTag> keyTags;
 
 
     private Event(Builder b) {
@@ -42,7 +39,7 @@ public final class Event {
 
     private Event(UUID id, UUID deviceId, DateTime timestamp, String stream,
                   Collection<String> tags, Location location, List<Reading> readings,
-                  Map<String, ? extends Collection<String>> keyTags) {
+                  List<KeyTag> keyTags) {
         checkNotNull(id);
         this.id = id;
 
@@ -62,19 +59,16 @@ public final class Event {
         this.readings = filterNulls(readings);
 
         this.tags = (tags == null) ? ImmutableSet.<String>of() : filterBlankTags(tags);
-        this.keyTags = (keyTags == null) ? ImmutableMap.<String, ImmutableSet<String>>of() :
-                filterBlankKeyTags(keyTags);
+        this.keyTags = (keyTags == null) ? ImmutableList.<KeyTag>of() : filterBlankKeyTags(keyTags);
         checkAllTagsHaveNoWhitespace();
         checkAllKeyTagsKeysAreValid();
     }
 
-    private ImmutableMap<String, ImmutableSet<String>> filterBlankKeyTags(
-            Map<String, ? extends Collection<String>> keyTags) {
-        ImmutableMap.Builder<String, ImmutableSet<String>> keyTagsBuilder = new ImmutableMap.Builder<>();
-
-        for (Map.Entry<String, ? extends Collection<String>> entry : keyTags.entrySet()) {
-            ImmutableSet<String> tagsForKey = filterBlankTags(entry.getValue());
-            keyTagsBuilder.put(entry.getKey(), tagsForKey);
+    private ImmutableList<KeyTag> filterBlankKeyTags(List<KeyTag> keyTags) {
+        ImmutableList.Builder<KeyTag> keyTagsBuilder = new ImmutableList.Builder<>();
+        for (KeyTag entry : keyTags) {
+            ImmutableSet<String> tagsForKey = filterBlankTags(entry.getTags());
+            keyTagsBuilder.add(new KeyTag(entry.getKey(), tagsForKey));
         }
         return keyTagsBuilder.build();
     }
@@ -90,8 +84,8 @@ public final class Event {
 
     private void checkAllTagsHaveNoWhitespace() {
         List<String> allTags = Lists.newArrayList(tags);
-        for (Set<String> tagsForKey : keyTags.values()) {
-            allTags.addAll(tagsForKey);
+        for (KeyTag keyTag : keyTags) {
+            allTags.addAll(keyTag.getTags());
         }
         checkArgument(Iterables.all(allTags, new Predicate<String>() {
             @Override
@@ -102,8 +96,8 @@ public final class Event {
     }
 
     public void checkAllKeyTagsKeysAreValid() {
-        for (String key : keyTags.keySet()) {
-            checkArgument(ModelUtils.isValidReadingKey(key), key + " is not a valid key.");
+        for (KeyTag keyTag : keyTags) {
+            checkArgument(ModelUtils.isValidReadingKey(keyTag.getKey()), keyTag.getKey() + " is not a valid key.");
         }
     }
 
@@ -173,7 +167,7 @@ public final class Event {
         return location;
     }
 
-    public ImmutableMap<String, ImmutableSet<String>> getKeyTags() {
+    public ImmutableList<KeyTag> getKeyTags() {
         return keyTags;
     }
 
@@ -226,7 +220,7 @@ public final class Event {
         private Location location;
         private List<Reading> readings;
         private Collection<String> tags;
-        private Map<String, ? extends Collection<String>> keyTags;
+        private List<KeyTag> keyTags;
 
         public Builder() {
         }
@@ -277,7 +271,7 @@ public final class Event {
             return this;
         }
 
-        public Builder keyTags(Map<String, Collection<String>> keyTags) {
+        public Builder keyTags(List<KeyTag> keyTags) {
             this.keyTags = keyTags;
             return this;
         }

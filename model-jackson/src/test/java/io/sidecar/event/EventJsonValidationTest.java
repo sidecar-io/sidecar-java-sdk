@@ -1,8 +1,10 @@
 package io.sidecar.event;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotSame;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +12,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -21,10 +23,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 
 /**
@@ -190,12 +188,14 @@ public class EventJsonValidationTest {
     }
 
     @Test(description = "Assert that keytags are added if present in the json payload")
-    public void validateKeyTagsAsMapOfStringToListOfString() throws Exception {
+    public void validateKeyTagsAsListOfKeyTags() throws Exception {
         Event event = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
-        ImmutableMap<String, ImmutableSet<String>> keytags = event.getKeyTags();
+
+        ImmutableList<KeyTag> keytags = event.getKeyTags();
 
         assertEquals(keytags.size(), 1);
-        assertEquals(keytags.get("P2V"), ImmutableSet.of("tag", "for", "only", "P2V", "readings"));
+        assertEquals(keytags.get(0).getKey(), "P2V");
+        assertEquals(keytags.get(0).getTags(), ImmutableSet.of("tag", "for", "only", "P2V", "readings"));
 
     }
 
