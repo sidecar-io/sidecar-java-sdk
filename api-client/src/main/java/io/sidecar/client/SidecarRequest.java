@@ -16,7 +16,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SidecarRequest {
+abstract class SidecarRequest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarRequest.class);
 

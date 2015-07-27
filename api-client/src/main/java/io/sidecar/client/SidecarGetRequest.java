@@ -12,7 +12,7 @@ import java.net.URL;
 
 import static io.sidecar.util.DateUtils.nowUtc;
 
-public class SidecarGetRequest extends SidecarRequest {
+class SidecarGetRequest extends SidecarRequest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarGetRequest.class);
 

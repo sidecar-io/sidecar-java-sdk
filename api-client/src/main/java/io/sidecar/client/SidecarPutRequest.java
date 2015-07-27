@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 
 @SuppressWarnings("unused")
-public class SidecarPutRequest extends SidecarRequest {
+ class SidecarPutRequest extends SidecarRequest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SidecarPostRequest.class);
     private static final ModelMapper mapper = new ModelMapper();

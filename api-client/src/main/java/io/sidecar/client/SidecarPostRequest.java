@@ -12,7 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SidecarPostRequest extends SidecarRequest {
+class SidecarPostRequest extends SidecarRequest {
 
     private static final ModelMapper mapper = new ModelMapper();
 
