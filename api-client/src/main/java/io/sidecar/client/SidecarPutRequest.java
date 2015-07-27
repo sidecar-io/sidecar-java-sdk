@@ -2,7 +2,6 @@ package io.sidecar.client;
 
 import static io.sidecar.util.DateUtils.nowUtc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.sidecar.jackson.ModelMapper;
 import io.sidecar.security.signature.SignatureVersion;
 import org.apache.http.client.methods.HttpPut;

@@ -23,7 +23,6 @@ abstract class SidecarRequest {
     protected String accessKey;
     protected String secret;
     protected String password;
-    protected String device;
     protected String requestDate;
     protected String signatureVersion;
 
