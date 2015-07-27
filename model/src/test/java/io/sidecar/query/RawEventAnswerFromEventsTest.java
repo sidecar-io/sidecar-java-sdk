@@ -27,7 +27,7 @@ public class RawEventAnswerFromEventsTest {
                 .stream("stream")
                 .tags(Sets.newHashSet("tag"))
                 .location(new Location(42.4, 95.5))
-                .keyTags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))));
+                .keytags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))));
 
         Event eventA = builder.id(UUID.randomUUID()).readings(
                 Collections.singletonList(new Reading("foo", dateTime, 23))).build();

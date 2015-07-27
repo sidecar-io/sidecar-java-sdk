@@ -27,7 +27,7 @@ abstract class EventMixin {
                        @JsonProperty("tags") Collection<String> tags,
                        @JsonProperty("location") Location location,
                        @JsonProperty("readings") List<Reading> readings,
-                       @JsonProperty("keyTags") List<KeyTag> keyTags) {
+                       @JsonProperty("keytags") List<KeyTag> keytags) {
     }
 
     @JsonIgnore
@@ -42,7 +42,7 @@ abstract class EventMixin {
     @JsonGetter("tags")
     abstract Set<String> getTagsNull();
 
-    @JsonGetter("keyTags")
+    @JsonGetter("keytags")
     abstract List<KeyTag> getKeyTagsNull();
 
 

@@ -32,16 +32,16 @@ public final class Event {
     private final Location location;
     private final ImmutableList<Reading> readings;
     private final ImmutableSet<String> tags;
-    private final ImmutableList<KeyTag> keyTags;
+    private final ImmutableList<KeyTag> keytags;
 
 
     private Event(Builder b) {
-        this(b.id, b.deviceId, b.timestamp, b.stream, b.tags, b.location, b.readings, b.keyTags);
+        this(b.id, b.deviceId, b.timestamp, b.stream, b.tags, b.location, b.readings, b.keytags);
     }
 
     private Event(UUID id, UUID deviceId, DateTime timestamp, String stream,
                   Collection<String> tags, Location location, List<Reading> readings,
-                  List<KeyTag> keyTags) {
+                  List<KeyTag> keytags) {
         checkNotNull(id);
         this.id = id;
 
@@ -61,14 +61,14 @@ public final class Event {
         this.readings = filterNulls(readings);
 
         this.tags = (tags == null) ? null : filterBlankTags(tags);
-        this.keyTags = (keyTags == null) ? null : filterBlankKeyTags(keyTags);
+        this.keytags = (keytags == null) ? null : filterBlankKeyTags(keytags);
         checkAllTagsHaveNoWhitespace();
         checkAllKeyTagsKeysAreValid();
     }
 
-    private ImmutableList<KeyTag> filterBlankKeyTags(List<KeyTag> keyTags) {
+    private ImmutableList<KeyTag> filterBlankKeyTags(List<KeyTag> keytags) {
         ImmutableList.Builder<KeyTag> keyTagsBuilder = new ImmutableList.Builder<>();
-        for (KeyTag entry : keyTags) {
+        for (KeyTag entry : keytags) {
             ImmutableSet<String> tagsForKey = filterBlankTags(entry.getTags());
             keyTagsBuilder.add(new KeyTag(entry.getKey(), tagsForKey));
         }
@@ -86,7 +86,7 @@ public final class Event {
 
     private void checkAllTagsHaveNoWhitespace() {
         List<String> allTags = Lists.newArrayList((tags != null) ? tags : Collections.<String>emptyList());
-        for (KeyTag keyTag : (keyTags != null) ? keyTags : Collections.<KeyTag>emptyList() ) {
+        for (KeyTag keyTag : (keytags != null) ? keytags : Collections.<KeyTag>emptyList() ) {
             allTags.addAll(keyTag.getTags());
         }
         checkArgument(Iterables.all(allTags, new Predicate<String>() {
@@ -98,10 +98,10 @@ public final class Event {
     }
 
     private void checkAllKeyTagsKeysAreValid() {
-        if (keyTags == null) {
+        if (keytags == null) {
             return;
         }
-        for (KeyTag keyTag : keyTags) {
+        for (KeyTag keyTag : keytags) {
             checkArgument(ModelUtils.isValidReadingKey(keyTag.getKey()), keyTag.getKey() + " is not a valid key.");
         }
     }
@@ -177,13 +177,13 @@ public final class Event {
         return location;
     }
 
-    public ImmutableList<KeyTag> getKeyTags() {
-        return (keyTags != null) ? keyTags : ImmutableList.<KeyTag>of();
+    public ImmutableList<KeyTag> getKeytags() {
+        return (keytags != null) ? keytags : ImmutableList.<KeyTag>of();
     }
 
     @SuppressWarnings("unused")
     private List<KeyTag> getKeyTagsNull() {
-        return keyTags;
+        return keytags;
     }
 
     @Override
@@ -196,7 +196,7 @@ public final class Event {
                 ", location=" + location +
                 ", readings=" + readings +
                 ", tags=" + tags +
-                ", keytags=" + keyTags +
+                ", keytags=" + keytags +
                 "} " + super.toString();
     }
 
@@ -218,12 +218,12 @@ public final class Event {
                 Objects.equals(this.location, that.location) &&
                 Objects.equals(this.readings, that.readings) &&
                 Objects.equals(this.tags, that.tags) &&
-                Objects.equals(this.keyTags, that.keyTags);
+                Objects.equals(this.keytags, that.keytags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, deviceId, timestamp, stream, location, readings, tags, keyTags);
+        return Objects.hash(id, deviceId, timestamp, stream, location, readings, tags, keytags);
     }
 
     public static class Builder {
@@ -235,7 +235,7 @@ public final class Event {
         private Location location;
         private List<Reading> readings;
         private Collection<String> tags;
-        private List<KeyTag> keyTags;
+        private List<KeyTag> keytags;
 
         public Builder() {
         }
@@ -248,7 +248,7 @@ public final class Event {
             this.location = event.location;
             this.readings = event.readings;
             this.tags = event.tags;
-            this.keyTags = event.keyTags;
+            this.keytags = event.keytags;
         }
 
         public Builder id(UUID id) {
@@ -286,8 +286,8 @@ public final class Event {
             return this;
         }
 
-        public Builder keyTags(List<KeyTag> keyTags) {
-            this.keyTags = keyTags;
+        public Builder keytags(List<KeyTag> keytags) {
+            this.keytags = keytags;
             return this;
         }
 

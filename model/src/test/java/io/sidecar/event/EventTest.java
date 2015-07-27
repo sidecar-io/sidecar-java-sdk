@@ -26,7 +26,7 @@ public class EventTest {
                 .tags(Sets.newHashSet("foo", "bar"))
                 .location(new Location(0.0, 0.0))
                 .readings(singletonList(new Reading("key", DateTime.now(DateTimeZone.UTC), 1L)))
-                .keyTags(new ImmutableList.Builder<KeyTag>()
+                .keytags(new ImmutableList.Builder<KeyTag>()
                                 .add(new KeyTag("key", Sets.newHashSet("keytag")))
                                 .build()
                 );
@@ -90,7 +90,7 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainSpaces() {
         createBuilderWithExpectedValues()
-                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key tag"))))
+                .keytags(newArrayList(new KeyTag("key", Sets.newHashSet("key tag"))))
                 .build();
 
     }
@@ -99,7 +99,7 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainNewLines() {
         createBuilderWithExpectedValues()
-                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ntag"))))
+                .keytags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ntag"))))
                 .build();
     }
 
@@ -107,14 +107,14 @@ public class EventTest {
             expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantContainTabs() {
         createBuilderWithExpectedValues()
-                .keyTags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ttag"))))
+                .keytags(newArrayList(new KeyTag("key", Sets.newHashSet("key\ttag"))))
                 .build();
     }
 
     @Test(description = "A key tag can't be over 40 characters", expectedExceptions = IllegalArgumentException.class)
     public void singleKeyTagCantHaveOver40Chars() {
         createBuilderWithExpectedValues()
-                .keyTags(newArrayList(new KeyTag(RandomStringUtils.randomAlphabetic(41), Sets.newHashSet("foo"))))
+                .keytags(newArrayList(new KeyTag(RandomStringUtils.randomAlphabetic(41), Sets.newHashSet("foo"))))
                 .build();
     }
 
