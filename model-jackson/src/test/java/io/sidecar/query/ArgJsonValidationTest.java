@@ -13,7 +13,7 @@ public class ArgJsonValidationTest {
           "Asserts that Args can be deserialized and serialized back in to an equals, but not " +
           "same, object")
     public void toJsonAndBack() throws Exception {
-        ModelMapper mapper = ModelMapper.instance();
+        ModelMapper mapper = new ModelMapper();
         Arg original = new Arg("ABC", "123");
         String serialized = mapper .writeValueAsString(original);
         Arg deserialized = mapper.readValue(serialized, Arg.class);

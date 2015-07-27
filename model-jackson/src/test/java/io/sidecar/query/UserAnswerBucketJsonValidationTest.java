@@ -11,7 +11,7 @@ import static org.testng.Assert.assertTrue;
 
 public class UserAnswerBucketJsonValidationTest {
 
-    private ModelMapper mapper = ModelMapper.instance();
+    private ModelMapper mapper = new ModelMapper();
 
     @Test(description = "Asserts that serializing a UserAnswerBucket containing RawEventsAnswers produces the proper" +
             "json")

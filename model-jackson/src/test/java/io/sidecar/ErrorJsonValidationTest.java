@@ -13,7 +13,7 @@ public class ErrorJsonValidationTest {
     @Test(description = "Asserts that Errors can be deserialized and serialized back in to " +
             "an equal, but not the same, object")
     public void toJsonAndBack() throws Exception {
-        ModelMapper mapper = ModelMapper.instance();
+        ModelMapper mapper = new ModelMapper();
         Error original = new Error("ABC", "123");
         String serialized = mapper.writeValueAsString(original);
         Error deserialized = mapper.readValue(serialized, Error.class);

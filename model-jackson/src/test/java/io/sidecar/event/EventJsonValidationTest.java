@@ -34,7 +34,7 @@ public class EventJsonValidationTest {
 
     private String validEventAsJsonString;
     private ObjectNode eventAsObjectNode;
-    private ModelMapper mapper = ModelMapper.instance();
+    private ModelMapper mapper = new ModelMapper();
 
     static Reading readingFromJsonNode(JsonNode n) {
         return new Reading(n.path("key").asText(), new DateTime(n.path("ts").asText()),

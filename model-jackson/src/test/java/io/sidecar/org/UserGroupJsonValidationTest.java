@@ -10,7 +10,7 @@ import static org.testng.Assert.assertEquals;
 
 public class UserGroupJsonValidationTest {
 
-    private ModelMapper mapper = ModelMapper.instance();
+    private ModelMapper mapper = new ModelMapper();
 
     @Test(description = "Assert that serializing to json and deserializing back again produces an equal " +
             "UserGroup object")

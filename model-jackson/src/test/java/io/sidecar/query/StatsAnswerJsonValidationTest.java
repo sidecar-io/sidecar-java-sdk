@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 public class StatsAnswerJsonValidationTest {
 
     private String validStatsAnswerAsJsonString;
-    private ModelMapper mapper = ModelMapper.instance();
+    private ModelMapper mapper = new ModelMapper();
 
     @BeforeMethod
     public void loadValidEventJsonAsString() throws Exception {

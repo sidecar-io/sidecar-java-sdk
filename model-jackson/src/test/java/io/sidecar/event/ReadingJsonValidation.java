@@ -12,7 +12,7 @@ import static org.testng.Assert.assertNotSame;
 
 public class ReadingJsonValidation {
 
-    ModelMapper mapper = ModelMapper.instance();
+    ModelMapper mapper = new ModelMapper();
 
     @Test(description = "Asserts that Reading can be deserialized and serialized back in to an equals, but not the " +
             "same, object")

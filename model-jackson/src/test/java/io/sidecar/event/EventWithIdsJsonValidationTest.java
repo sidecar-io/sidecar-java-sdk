@@ -17,7 +17,7 @@ public class EventWithIdsJsonValidationTest {
     private UUID appIdUnderTest = UUID.randomUUID();
     private Event eventUnderTest;
     private ObjectNode eventWithAppIdAsJson;
-    private ModelMapper mapper = ModelMapper.instance();
+    private ModelMapper mapper = new ModelMapper();
 
     @BeforeMethod
     public void loadValidEventJsonAsString() throws Exception {

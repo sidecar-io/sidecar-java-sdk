@@ -2,7 +2,6 @@ package io.sidecar.jackson;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
@@ -19,13 +18,7 @@ import static com.google.common.base.Throwables.propagate;
 
 public class ModelMapper extends ObjectMapper {
 
-    private static final ModelMapper mm = new ModelMapper();
-
-    public static ModelMapper instance() {
-        return mm;
-    }
-
-    private ModelMapper() {
+    public ModelMapper() {
         registerSidecarModules();
         register3rdPartyModules();
     }

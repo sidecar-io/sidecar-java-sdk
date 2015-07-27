@@ -14,7 +14,7 @@ public class LocationJsonValidationTest {
           "Asserts that Location can be deserialized and serialized back in to an equals, but not "
           + "same, object")
     public void toJsonAndBack() throws Exception {
-        ModelMapper modelMapper = ModelMapper.instance();
+        ModelMapper modelMapper = new ModelMapper();
         Location original = new Location(19.0, -110.13434);
         String serialized = modelMapper.writeValueAsString(original);
         Location deserialized = modelMapper.readValue(serialized, Location.class);

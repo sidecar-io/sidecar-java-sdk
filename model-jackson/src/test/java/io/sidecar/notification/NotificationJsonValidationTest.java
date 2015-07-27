@@ -11,7 +11,7 @@ import static org.testng.Assert.assertEquals;
 
 public class NotificationJsonValidationTest {
 
-    ModelMapper mapper = ModelMapper.instance();
+    ModelMapper mapper = new ModelMapper();
 
     String asJsonString;
     ObjectNode asObjectNode;
