@@ -21,4 +21,12 @@ public class SidecarResponse {
     public String getBody() {
         return body;
     }
+
+    @Override
+    public String toString() {
+        return "SidecarResponse{" +
+                "statusCode=" + statusCode +
+                ", body='" + body + '\'' +
+                '}';
+    }
 }
