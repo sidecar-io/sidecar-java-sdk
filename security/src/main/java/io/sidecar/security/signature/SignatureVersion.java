@@ -19,8 +19,11 @@ public abstract class SignatureVersion {
 
         @SuppressWarnings("unused")
         public static Version fromString(String text) {
+            if (text == null) {
+                return null;
+            }
             for (Version v : Version.values()) {
-                if (text.equalsIgnoreCase(v.digit)) {
+                if (text.trim().equalsIgnoreCase(v.digit)) {
                     return v;
                 }
             }
