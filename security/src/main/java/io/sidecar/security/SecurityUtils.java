@@ -3,6 +3,9 @@ package io.sidecar.security;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+import org.apache.commons.codec.binary.Hex;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -41,7 +44,7 @@ public class SecurityUtils {
             digest.update(input.getBytes(), 0, input.length());
 
             //Converts message digest value in base 16 (hex)
-            return new BigInteger(1, digest.digest()).toString(16);
+            return Hex.encodeHexString(digest.digest());
         } catch (NoSuchAlgorithmException e) {
             throw new IllegalStateException(e);
         }
