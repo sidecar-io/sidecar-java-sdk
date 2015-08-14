@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,12 +27,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
 import io.sidecar.access.AccessKey;
+import io.sidecar.client.ClientConfig;
 import io.sidecar.client.SidecarClient;
 import io.sidecar.credential.Credential;
 
@@ -143,22 +145,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
-
-
-
-//            try {
-//                boolean success = mAuthTask.get();
-//                if (success) {
-//                    Intent intent = new Intent(this, DisplayMessageActivity.class);
-//                    intent.putExtra("username",email);
-//                    startActivity(intent);
-//                } else {
-//                    mEmailView.setError("Authentication failed");
-//                }
-//            } catch (InterruptedException|ExecutionException e) {
-//                mEmailView.setError("Unknown Error Logging in");
-//            }
-
         }
     }
 
@@ -227,7 +213,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        List<String> emails = new ArrayList<String>();
+        List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
@@ -268,6 +254,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final static String LOG_TAG = "UserLoginTask";
         private final String mEmail;
         private final String mPassword;
         private AccessKey accessKey;
@@ -280,10 +267,17 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                SidecarClient sidecarClient = new SidecarClient(APP_KEYS);
+
+                SidecarClient sidecarClient = new SidecarClient(APP_KEYS,
+                        new ClientConfig(new URL("http://10.0.2.2:8080/rest-api")));
+                Log.d(LOG_TAG, "Attempting to retrieve keys from "
+                        + sidecarClient.getConfig().getRestApiBasePath()
+                        + " with username: " + mEmail
+                        + " and password: " + mPassword);
                 accessKey = sidecarClient.authenticateUser(new Credential(mEmail, mPassword));
                 return true;
             } catch (Exception e) {
+                Log.i(LOG_TAG, "Login failed ", e);
                 return false;
             }
         }

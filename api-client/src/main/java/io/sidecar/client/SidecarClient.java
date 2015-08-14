@@ -410,6 +410,10 @@ public class SidecarClient {
         }
     }
 
+    public ClientConfig getConfig() {
+        return clientConfig;
+    }
+
     private URL fullUrlForPath(String path) {
         try {
             URL baseUrl = clientConfig.getRestApiBasePath();
