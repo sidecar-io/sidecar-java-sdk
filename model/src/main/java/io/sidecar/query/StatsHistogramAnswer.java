@@ -6,14 +6,14 @@ import com.google.common.collect.ImmutableMap;
 
 public class StatsHistogramAnswer implements Answer {
 
-    private final ImmutableMap<String, Double> buckets;
+    private final ImmutableMap<String, Integer> buckets;
 
-    public StatsHistogramAnswer(Map<String, Double> statsKeys) {
-        if (statsKeys == null) {
+    public StatsHistogramAnswer(Map<String, Integer> b) {
+        if (b == null) {
             buckets = ImmutableMap.of();
         } else {
-            ImmutableMap.Builder<String, Double> imb = ImmutableMap.builder();
-            for (Map.Entry<String, Double> e : statsKeys.entrySet()) {
+            ImmutableMap.Builder<String, Integer> imb = ImmutableMap.builder();
+            for (Map.Entry<String, Integer> e : b.entrySet()) {
                 imb.put(e.getKey(), e.getValue());
             }
             buckets = imb.build();
@@ -25,7 +25,7 @@ public class StatsHistogramAnswer implements Answer {
      *
      * @return the buckets and their respective numeric value
      */
-    public ImmutableMap<String, Double> getBuckets() {
+    public ImmutableMap<String, Integer> getBuckets() {
         return buckets;
     }
 

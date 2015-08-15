@@ -23,18 +23,18 @@ public class StatsHistogramAnswerValidationTest {
     }
 
     @Test
-    public void statsAnswerCreatedFromJson() throws Exception {
+    public void statsHistogramAnswerCreatedFromJson() throws Exception {
         JsonNode arr = mapper.readTree(validStatsAnswerAsJsonString);
         StatsHistogramAnswer answerA = mapper.readValue(arr.get(0).traverse(), StatsHistogramAnswer.class);
 
-        assertEquals(answerA.getBuckets().get("0"), 5.0);
-        assertEquals(answerA.getBuckets().get("1"), 8.0);
+        assertEquals(answerA.getBuckets().get("0"), Integer.valueOf(5));
+        assertEquals(answerA.getBuckets().get("1"), Integer.valueOf(8));
     }
 
     @Test
     public void toJsonAndBackStillEquals() throws Exception {
-        Map<String, Double> bucketsAndValues = new HashMap<>();
-        bucketsAndValues.put("0", 5.0);
+        Map<String, Integer> bucketsAndValues = new HashMap<>();
+        bucketsAndValues.put("0", 5);
 
         StatsHistogramAnswer original = new StatsHistogramAnswer(bucketsAndValues);
         String serialized = mapper.writeValueAsString(original);
