@@ -7,15 +7,15 @@ import java.util.Map;
 
 import org.testng.annotations.Test;
 
-public class StatsHistogramAnswerTest {
+public class HistogramAnswerTest {
 
     @Test
-    public void testStatsHistogramAnswer() {
+    public void testHistogramAnswer() {
 
         Map<String, Integer> bucketsAndValues = new HashMap<>();
         bucketsAndValues.put("0", 42);
 
-        StatsHistogramAnswer answer = new StatsHistogramAnswer(bucketsAndValues);
+        HistogramAnswer answer = new HistogramAnswer(bucketsAndValues);
 
         assertTrue(answer.getBuckets().containsKey("0"));
     }

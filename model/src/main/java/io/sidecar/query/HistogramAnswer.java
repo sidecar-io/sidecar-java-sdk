@@ -4,11 +4,11 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
-public class StatsHistogramAnswer implements Answer {
+public class HistogramAnswer implements Answer {
 
     private final ImmutableMap<String, Integer> buckets;
 
-    public StatsHistogramAnswer(Map<String, Integer> b) {
+    public HistogramAnswer(Map<String, Integer> b) {
         if (b == null) {
             buckets = ImmutableMap.of();
         } else {
@@ -38,7 +38,7 @@ public class StatsHistogramAnswer implements Answer {
             return false;
         }
 
-        StatsHistogramAnswer that = (StatsHistogramAnswer) obj;
+        HistogramAnswer that = (HistogramAnswer) obj;
 
         return buckets.equals(that.buckets);
     }

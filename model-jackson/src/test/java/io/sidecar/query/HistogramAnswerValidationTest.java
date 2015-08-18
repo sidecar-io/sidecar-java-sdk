@@ -11,21 +11,21 @@ import org.apache.commons.io.IOUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class StatsHistogramAnswerValidationTest {
+public class HistogramAnswerValidationTest {
 
-    private String validStatsAnswerAsJsonString;
+    private String validHistogramAsJsonString;
     private ModelMapper mapper = new ModelMapper();
 
     @BeforeMethod
     public void loadValidEventJsonAsString() throws Exception {
-        validStatsAnswerAsJsonString =
-                IOUtils.toString(this.getClass().getResource("/proposed_stats_histogram_answer.json"));
+        validHistogramAsJsonString =
+                IOUtils.toString(this.getClass().getResource("/proposed_histogram_answer.json"));
     }
 
     @Test
-    public void statsHistogramAnswerCreatedFromJson() throws Exception {
-        JsonNode arr = mapper.readTree(validStatsAnswerAsJsonString);
-        StatsHistogramAnswer answerA = mapper.readValue(arr.get(0).traverse(), StatsHistogramAnswer.class);
+    public void histogramAnswerCreatedFromJson() throws Exception {
+        JsonNode arr = mapper.readTree(validHistogramAsJsonString);
+        HistogramAnswer answerA = mapper.readValue(arr.get(0).traverse(), HistogramAnswer.class);
 
         assertEquals(answerA.getBuckets().get("0"), Integer.valueOf(5));
         assertEquals(answerA.getBuckets().get("1"), Integer.valueOf(8));
@@ -36,9 +36,9 @@ public class StatsHistogramAnswerValidationTest {
         Map<String, Integer> bucketsAndValues = new HashMap<>();
         bucketsAndValues.put("0", 5);
 
-        StatsHistogramAnswer original = new StatsHistogramAnswer(bucketsAndValues);
+        HistogramAnswer original = new HistogramAnswer(bucketsAndValues);
         String serialized = mapper.writeValueAsString(original);
-        StatsHistogramAnswer deserialized = mapper.readValue(serialized, StatsHistogramAnswer.class);
+        HistogramAnswer deserialized = mapper.readValue(serialized, HistogramAnswer.class);
 
         assertEquals(deserialized, original);
     }

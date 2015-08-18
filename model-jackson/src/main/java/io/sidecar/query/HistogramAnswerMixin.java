@@ -5,9 +5,9 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @SuppressWarnings("unused") //Used by Jackson
-abstract public class StatsHistogramAnswerMixin {
+abstract public class HistogramAnswerMixin {
 
-    private StatsHistogramAnswerMixin(@JsonProperty("buckets") Map<String, Integer> buckets) {
+    private HistogramAnswerMixin(@JsonProperty("buckets") Map<String, Integer> buckets) {
 
     }
 }

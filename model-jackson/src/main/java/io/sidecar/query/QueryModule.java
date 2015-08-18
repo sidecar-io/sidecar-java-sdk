@@ -16,8 +16,8 @@ public class QueryModule extends SimpleModule {
         context.setMixInAnnotations(DataPoint.class, DataPointMixin.class);
         context.setMixInAnnotations(StatsAnswer.class,
                 StatsAnswerMixin.class);
-        context.setMixInAnnotations(StatsHistogramAnswer.class,
-                StatsHistogramAnswerMixin.class);
+        context.setMixInAnnotations(HistogramAnswer.class,
+                HistogramAnswerMixin.class);
         context.setMixInAnnotations(UserAnswerBucketMixin.class, UserAnswerBucket.class);
     }
 }
