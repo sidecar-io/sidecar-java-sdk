@@ -270,6 +270,28 @@ public class SidecarClient {
     }
 
     @SuppressWarnings("unused")
+    public void deleteUser(String emailAddress, String password) {
+        try {
+            Credential credential = new Credential(emailAddress, password);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
+            SidecarDeleteRequest sidecarRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .withPayload(credential)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            // check for an no content response code
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+
+    @SuppressWarnings("unused")
     public void addNotificationToken(PlatformDeviceToken token) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/token");
@@ -281,7 +303,7 @@ public class SidecarClient {
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
-            // check for an accepted response code
+            // check for an no content response code
             if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
