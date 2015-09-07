@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.sidecar.util.CollectionUtils.filterNulls;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -278,6 +279,11 @@ public final class Event {
 
         public Builder readings(List<Reading> readings) {
             this.readings = readings;
+            return this;
+        }
+
+        public Builder readings(Reading... readings) {
+            this.readings = Arrays.asList(readings);
             return this;
         }
 
