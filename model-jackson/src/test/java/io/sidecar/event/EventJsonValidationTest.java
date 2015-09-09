@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -28,8 +27,7 @@ import org.testng.annotations.Test;
 
 
 /**
- * Test methods that assert that an Event object can only be created from a true valid json
- * payload.
+ * Test methods that assert that an Event object can only be created from a valid json payload.
  */
 public class EventJsonValidationTest {
 
@@ -90,11 +88,19 @@ public class EventJsonValidationTest {
         mapper.readValue(eventAsObjectNode.traverse(), Event.class);
     }
 
-    @Test(description = "Assert that an event can't be created when id is missing",
-            expectedExceptions = JsonMappingException.class)
+    @Test(description = "Assert that an event can be created when id is missing")
     public void eventIdIsMissing() throws Exception {
         eventAsObjectNode.remove("id");
         mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+    }
+
+    @Test(description = "Assert that an event can be created when id is missing")
+    public void eventWithoutIdSerializesProperly() throws Exception {
+        eventAsObjectNode.remove("id");
+        Event before = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
+        ObjectNode serialized = mapper.valueToTree(before);
+        assertTrue(serialized.path("id").isMissingNode());
+        assertEquals(mapper.treeToValue(serialized,Event.class), before);
     }
 
     @Test(description = "Assert that an event can't be created when deviceId isn't a UUID",
