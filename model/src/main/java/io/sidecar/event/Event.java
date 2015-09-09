@@ -43,7 +43,6 @@ public final class Event {
     private Event(UUID id, UUID deviceId, DateTime timestamp, String stream,
                   Collection<String> tags, Location location, List<Reading> readings,
                   List<KeyTag> keytags) {
-        checkNotNull(id);
         this.id = id;
 
         checkNotNull(deviceId);

@@ -118,5 +118,10 @@ public class EventTest {
                 .build();
     }
 
-
+    @Test(description = "id is not required to construct a valid Event")
+    public void idNotRequired() {
+        createBuilderWithExpectedValues()
+                .id(null)
+                .build();
+    }
 }
