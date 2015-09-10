@@ -46,6 +46,7 @@ public class SidecarClient {
 
     /**
      * Given a username and password, obtain that user's AccessKey's for this application if that user exists.
+     *
      * @param credential The user's credentials.
      * @return AccessKeys for the user identified by the provided Credentials
      */
@@ -99,7 +100,7 @@ public class SidecarClient {
 
             if (response.getStatusCode() == 200) {
                 LOGGER.debug(response.getBody());
-                return Collections.checkedList(mapper.readValue(response.getBody(), List.class),UserAnswerBucket.class);
+                return Collections.checkedList(mapper.readValue(response.getBody(), List.class), UserAnswerBucket.class);
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -107,7 +108,6 @@ public class SidecarClient {
             throw propagate(e);
         }
     }
-
 
     public UUID postEvent(Event event) {
         try {
@@ -202,7 +202,7 @@ public class SidecarClient {
         }
     }
 
-    @SuppressWarnings({"unchecked","unused"})
+    @SuppressWarnings({"unchecked", "unused"})
     public List<UUID> getGroupsForUser(String emailAddress) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress + "/groups");
@@ -224,6 +224,49 @@ public class SidecarClient {
     }
 
     @SuppressWarnings("unused")
+    public void updateUserMetadata(Map<String, String> metaData) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(metaData)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    public Map<String, String> getUserMetadata() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), Map.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+
+    }
+
+    @SuppressWarnings("unused")
     public void provisionDevice(UUID deviceId) {
         Map<String, String> metaData = new HashMap<>();
         metaData.put("deviceId", deviceId.toString());
@@ -237,7 +280,7 @@ public class SidecarClient {
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
-            //The response body is empty if 200, so only check if we do not have a 200 response
+            //The response body is empty if 204, so only check if we do not have a 204 response
             if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -369,7 +412,7 @@ public class SidecarClient {
         }
     }
 
-    @SuppressWarnings({"unused","unchecked"})
+    @SuppressWarnings({"unused", "unchecked"})
     public List<NotificationRule> getNotificationRules(UUID appId, UUID userId) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rules");
