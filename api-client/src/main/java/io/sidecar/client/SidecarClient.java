@@ -289,6 +289,26 @@ public class SidecarClient {
         }
 
     }
+    @SuppressWarnings("unused")
+    public void deprovisionDevice(UUID deviceId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            SidecarDeleteRequest sidecarDeleteRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarDeleteRequest.send();
+
+            //The response body is empty if 204, so only check if we do not have a 204 response
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+
+    }
 
     @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
