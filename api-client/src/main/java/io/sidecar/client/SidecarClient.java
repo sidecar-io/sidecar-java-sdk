@@ -376,6 +376,47 @@ public class SidecarClient {
         }
     }
 
+    @SuppressWarnings("unused")
+    public Map<String, String> getUserDeviceMetadata(UUID deviceId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), Map.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void updateUserDeviceMetadata(UUID deviceId, Map<String, String> metaData) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(metaData)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
 
     /********************************************
      * Notification and Notification Rule Methods
@@ -401,7 +442,6 @@ public class SidecarClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-
     }
 
     @SuppressWarnings("unused")
@@ -435,7 +475,6 @@ public class SidecarClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-
     }
 
     @SuppressWarnings("unused")
