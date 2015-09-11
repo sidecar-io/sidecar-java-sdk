@@ -44,6 +44,11 @@ public class SidecarClient {
         this.clientConfig = clientConfig;
     }
 
+
+    /**************************************
+     * Authentication and Keyset Methods
+     *************************************/
+
     /**
      * Given a username and password, obtain that user's AccessKey's for this application if that user exists.
      *
@@ -75,32 +80,18 @@ public class SidecarClient {
         }
     }
 
-    @SuppressWarnings("unused")
-    public List<UserAnswerBucket> postUserQuery(String type, Query query) {
-        String path = "/rest/v1/query/user/devices/" + type;
-        return postUserBasedQuery(path, query);
-    }
-
-    public List<UserAnswerBucket> postUserDeviceQuery(String type, UUID deviceId, Query query) {
-        String path = "/rest/v1/query/user/device/" + deviceId.toString() + "/" + type;
-        return postUserBasedQuery(path, query);
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<UserAnswerBucket> postUserBasedQuery(String path, Query query) {
+    public boolean checkApplicationKeyset() {
         try {
-            URL endpoint = fullUrlForPath(path);
-            SidecarPostRequest sidecarPostRequest = new SidecarPostRequest.Builder(
-                    accessKey.getKeyId(), "", accessKey.getSecret())
-                    .withSignatureVersion(ONE)
-                    .withUrl(endpoint)
-                    .withPayload(query)
-                    .build();
-            SidecarResponse response = sidecarPostRequest.send();
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/status");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
 
             if (response.getStatusCode() == 200) {
-                LOGGER.debug(response.getBody());
-                return Collections.checkedList(mapper.readValue(response.getBody(), List.class), UserAnswerBucket.class);
+                return true;
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -108,6 +99,32 @@ public class SidecarClient {
             throw propagate(e);
         }
     }
+
+    public boolean checkUserKeyset() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/status");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return true;
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+
+
+    /**************************************
+     * Event Publication Methods
+     *************************************/
 
     public UUID postEvent(Event event) {
         try {
@@ -125,6 +142,115 @@ public class SidecarClient {
                 JsonNode json = mapper.readTree(s);
                 System.out.println(json);
                 return UUID.fromString(json.path("id").asText());
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    /**************************************
+     * User and Group Provisioning Methods
+     *************************************/
+
+    @SuppressWarnings("unused")
+    public AccessKey createNewUser(String emailAddress, String password) {
+        try {
+            Credential credential = new Credential(emailAddress, password);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
+            SidecarPostRequest sidecarRequest =
+                    new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .withPayload(credential)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), AccessKey.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void deleteUser(String emailAddress, String password) {
+        try {
+            Credential credential = new Credential(emailAddress, password);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
+            SidecarDeleteRequest sidecarRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .withPayload(credential)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            // check for an no content response code
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void updateUserMetadata(Map<String, String> metaData) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(metaData)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public Map<String, String> getUserMetadata() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), Map.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public UUID userIdForUserAddress(String emailAddress) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress);
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+            if (response.getStatusCode() == 200) {
+                return UUID
+                        .fromString(mapper.readTree(response.getBody()).get("userId").textValue());
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -159,26 +285,6 @@ public class SidecarClient {
         }
     }
 
-    @SuppressWarnings("unused")
-    public UUID userIdForUserAddress(String emailAddress) {
-        try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress);
-            SidecarGetRequest sidecarGetRequest =
-                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withSignatureVersion(ONE)
-                            .withUrl(endpoint)
-                            .build();
-            SidecarResponse response = sidecarGetRequest.send();
-            if (response.getStatusCode() == 200) {
-                return UUID
-                        .fromString(mapper.readTree(response.getBody()).get("userId").textValue());
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-    }
 
     @SuppressWarnings("unused")
     public UserGroup addUserToUserGroup(UserGroup userGroup, UserGroupMember member) {
@@ -223,48 +329,9 @@ public class SidecarClient {
         }
     }
 
-    @SuppressWarnings("unused")
-    public void updateUserMetadata(Map<String, String> metaData) {
-        try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
-            SidecarPutRequest sidecarPutRequest =
-                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withSignatureVersion(ONE)
-                            .withUrl(endpoint)
-                            .withPayload(metaData)
-                            .build();
-            SidecarResponse response = sidecarPutRequest.send();
-
-            if (response.getStatusCode() != 204) {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-
-    }
-
-    @SuppressWarnings("unused")
-    public Map<String, String> getUserMetadata() {
-        try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user");
-            SidecarGetRequest sidecarGetRequest =
-                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withSignatureVersion(ONE)
-                            .withUrl(endpoint)
-                            .build();
-            SidecarResponse response = sidecarGetRequest.send();
-
-            if (response.getStatusCode() == 200) {
-                return mapper.readValue(response.getBody(), Map.class);
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-
-    }
+    /**************************************
+     * Device Provisioning Methods
+     *************************************/
 
     @SuppressWarnings("unused")
     public void provisionDevice(UUID deviceId) {
@@ -287,8 +354,8 @@ public class SidecarClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-
     }
+
     @SuppressWarnings("unused")
     public void deprovisionDevice(UUID deviceId) {
         try {
@@ -307,51 +374,12 @@ public class SidecarClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-
     }
 
-    @SuppressWarnings("unused")
-    public AccessKey createNewUser(String emailAddress, String password) {
-        try {
-            Credential credential = new Credential(emailAddress, password);
-            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
-            SidecarPostRequest sidecarRequest =
-                    new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withUrl(endpoint)
-                            .withSignatureVersion(ONE)
-                            .withPayload(credential)
-                            .build();
-            SidecarResponse response = sidecarRequest.send();
-            if (response.getStatusCode() == 200) {
-                return mapper.readValue(response.getBody(), AccessKey.class);
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-    }
 
-    @SuppressWarnings("unused")
-    public void deleteUser(String emailAddress, String password) {
-        try {
-            Credential credential = new Credential(emailAddress, password);
-            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user");
-            SidecarDeleteRequest sidecarRequest =
-                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withUrl(endpoint)
-                            .withSignatureVersion(ONE)
-                            .withPayload(credential)
-                            .build();
-            SidecarResponse response = sidecarRequest.send();
-            // check for an no content response code
-            if (response.getStatusCode() != 204) {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-    }
+    /********************************************
+     * Notification and Notification Rule Methods
+     ********************************************/
 
 
     @SuppressWarnings("unused")
@@ -455,18 +483,37 @@ public class SidecarClient {
         }
     }
 
-    public boolean checkApplicationKeyset() {
+
+    /*************************************
+     * Query Methods
+     *************************************/
+
+    @SuppressWarnings("unused")
+    public List<UserAnswerBucket> postUserQuery(String type, Query query) {
+        String path = "/rest/v1/query/user/devices/" + type;
+        return postUserBasedQuery(path, query);
+    }
+
+    public List<UserAnswerBucket> postUserDeviceQuery(String type, UUID deviceId, Query query) {
+        String path = "/rest/v1/query/user/device/" + deviceId.toString() + "/" + type;
+        return postUserBasedQuery(path, query);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<UserAnswerBucket> postUserBasedQuery(String path, Query query) {
         try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/application/status");
-            SidecarGetRequest sidecarGetRequest =
-                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withSignatureVersion(ONE)
-                            .withUrl(endpoint)
-                            .build();
-            SidecarResponse response = sidecarGetRequest.send();
+            URL endpoint = fullUrlForPath(path);
+            SidecarPostRequest sidecarPostRequest = new SidecarPostRequest.Builder(
+                    accessKey.getKeyId(), "", accessKey.getSecret())
+                    .withSignatureVersion(ONE)
+                    .withUrl(endpoint)
+                    .withPayload(query)
+                    .build();
+            SidecarResponse response = sidecarPostRequest.send();
 
             if (response.getStatusCode() == 200) {
-                return true;
+                LOGGER.debug(response.getBody());
+                return Collections.checkedList(mapper.readValue(response.getBody(), List.class), UserAnswerBucket.class);
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -475,25 +522,8 @@ public class SidecarClient {
         }
     }
 
-    public boolean checkUserKeyset() {
-        try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user/status");
-            SidecarGetRequest sidecarGetRequest =
-                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
-                            .withSignatureVersion(ONE)
-                            .withUrl(endpoint)
-                            .build();
-            SidecarResponse response = sidecarGetRequest.send();
 
-            if (response.getStatusCode() == 200) {
-                return true;
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
-        } catch (Exception e) {
-            throw propagate(e);
-        }
-    }
+
 
     public ClientConfig getConfig() {
         return clientConfig;
