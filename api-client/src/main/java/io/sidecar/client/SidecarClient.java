@@ -17,6 +17,7 @@ import io.sidecar.credential.Credential;
 import io.sidecar.event.Event;
 import io.sidecar.jackson.ModelMapper;
 import io.sidecar.notification.NotificationRule;
+import io.sidecar.org.Device;
 import io.sidecar.org.PlatformDeviceToken;
 import io.sidecar.org.UserGroup;
 import io.sidecar.org.UserGroupMember;
@@ -410,6 +411,29 @@ public class SidecarClient {
             SidecarResponse response = sidecarPutRequest.send();
 
             if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings({"unused", "unchecked"})
+    public List<Device> getDevicesForUser() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/devices");
+            SidecarGetRequest sidecarPostRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarPostRequest.send();
+
+            // check for an OK response code
+            if (response.getStatusCode() == 200) {
+                return Collections.checkedList(mapper.readValue(response.getBody(), java.util.List.class), Device.class);
+
+            } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
