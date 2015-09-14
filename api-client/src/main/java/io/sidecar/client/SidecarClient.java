@@ -553,7 +553,7 @@ public class SidecarClient {
     }
 
     @SuppressWarnings({"unused", "unchecked"})
-    public List<NotificationRule> getNotificationRules(UUID appId, UUID userId) {
+    public List<NotificationRule> getNotificationRules() {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rules");
             SidecarGetRequest sidecarPostRequest =
@@ -575,6 +575,25 @@ public class SidecarClient {
         }
     }
 
+    @SuppressWarnings("unused")
+    public void deleteNotificationRule(UUID ruleId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
+            SidecarDeleteRequest sidecarDeleteRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarDeleteRequest.send();
+
+            // check for an no content response code
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
 
     /*************************************
      * Query Methods
