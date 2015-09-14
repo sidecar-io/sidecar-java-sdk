@@ -360,7 +360,7 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public void deprovisionDevice(UUID deviceId) {
         try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
             SidecarDeleteRequest sidecarDeleteRequest =
                     new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -380,7 +380,7 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public Map<String, String> getUserDeviceMetadata(UUID deviceId) {
         try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -401,7 +401,7 @@ public class SidecarClient {
     @SuppressWarnings("unused")
     public void updateUserDeviceMetadata(UUID deviceId, Map<String, String> metaData) {
         try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
             SidecarPutRequest sidecarPutRequest =
                     new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -470,8 +470,6 @@ public class SidecarClient {
 
     @SuppressWarnings("unused")
     public UUID addNotificationRule(String name, String description, String stream, String key, Double min, Double max) {
-
-
         HashMap<String, Object> payload = new HashMap<>();
         payload.put("name", name);
         payload.put("description", description);
@@ -489,6 +487,37 @@ public class SidecarClient {
                             .withPayload(payload)
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
+
+            // check for an OK response code
+            if (response.getStatusCode() == 200) {
+                return UUID.fromString(mapper.readTree(response.getBody()).get("id").textValue());
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public UUID updateNotificationRule(UUID ruleId, String name, String description, String stream, String key, Double min, Double max) {
+        HashMap<String, Object> payload = new HashMap<>();
+        payload.put("name", name);
+        payload.put("description", description);
+        payload.put("stream", stream);
+        payload.put("key", key);
+        payload.put("min", min);
+        payload.put("max", max);
+
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(payload)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
 
             // check for an OK response code
             if (response.getStatusCode() == 200) {
