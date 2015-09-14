@@ -286,6 +286,28 @@ public class SidecarClient {
         }
     }
 
+    @SuppressWarnings("unused")
+    public UserGroup getGroupById(UUID groupId) {
+        try {
+
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + groupId.toString());
+            SidecarGetRequest
+                    sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+
+            SidecarResponse response = sidecarGetRequest.send();
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), UserGroup.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
 
     @SuppressWarnings("unused")
     public UserGroup addUserToUserGroup(UserGroup userGroup, UserGroupMember member) {
