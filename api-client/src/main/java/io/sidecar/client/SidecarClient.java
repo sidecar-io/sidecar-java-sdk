@@ -155,6 +155,8 @@ public class SidecarClient {
      * User and Group Provisioning Methods
      *************************************/
 
+    // User...
+
     @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
         try {
@@ -260,6 +262,8 @@ public class SidecarClient {
         }
     }
 
+    // Group....
+
     @SuppressWarnings("unused")
     public UserGroup createNewUserGroup(String newGroupName) {
         try {
@@ -302,6 +306,25 @@ public class SidecarClient {
             if (response.getStatusCode() == 200) {
                 return mapper.readValue(response.getBody(), UserGroup.class);
             } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void deleteGroup(UUID groupId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + groupId.toString());
+            SidecarDeleteRequest sidecarRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            // check for an no content response code
+            if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
