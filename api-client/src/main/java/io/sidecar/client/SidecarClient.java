@@ -201,6 +201,51 @@ public class SidecarClient {
     }
 
     @SuppressWarnings("unused")
+    public AccessKey createAccessKeyForUser(String emailAddress, String password) {
+        try {
+            Credential credential = new Credential(emailAddress, password);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/accesskey");
+            SidecarPostRequest sidecarRequest =
+                    new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .withPayload(credential)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), AccessKey.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public AccessKey updateAccessKeyForUser(String emailAddress, String password) {
+        try {
+            Credential credential = new Credential(emailAddress, password);
+            URL endpoint = fullUrlForPath("/rest/v1/provision/accesskey");
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(credential)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), AccessKey.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
     public void updateUserMetadata(Map<String, String> metaData) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user");
