@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.sidecar.access.AccessKey;
 import io.sidecar.credential.Credential;
 import io.sidecar.event.Event;
@@ -19,6 +21,7 @@ import io.sidecar.jackson.ModelMapper;
 import io.sidecar.notification.NotificationRule;
 import io.sidecar.org.Device;
 import io.sidecar.org.PlatformDeviceToken;
+import io.sidecar.org.Role;
 import io.sidecar.org.UserGroup;
 import io.sidecar.org.UserGroupMember;
 import io.sidecar.query.Query;
@@ -122,7 +125,6 @@ public class SidecarClient {
     }
 
 
-
     /**************************************
      * Event Publication Methods
      *************************************/
@@ -156,7 +158,6 @@ public class SidecarClient {
      *************************************/
 
     // User...
-
     @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
         try {
@@ -402,7 +403,7 @@ public class SidecarClient {
     @SuppressWarnings({"unchecked", "unused"})
     public List<UUID> getGroupMembers(UUID groupId) {
         try {
-            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + groupId.toString()  + "/members");
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + groupId.toString() + "/members");
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -412,6 +413,51 @@ public class SidecarClient {
 
             if (response.getStatusCode() == 200) {
                 return Collections.checkedList(mapper.readValue(response.getBody(), List.class), UUID.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    public UserGroup removeMemberFromGroup(UserGroup group, UUID userId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + group.getId().toString() + "/members/" +
+                    userId.toString());
+            SidecarDeleteRequest sidecarDeleteRequest =
+                    new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarDeleteRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), UserGroup.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    public UserGroup changeRoleForGroupMember(UserGroup group, UUID userId, Role newRole) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + group.getId().toString() + "/members/" +
+                    userId.toString() + "/role");
+            ObjectNode roleJson = JsonNodeFactory.instance.objectNode();
+            roleJson.put("role", newRole.roleName);
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(roleJson)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return mapper.readValue(response.getBody(), UserGroup.class);
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -441,7 +487,6 @@ public class SidecarClient {
             throw propagate(e);
         }
     }
-
 
 
     /**************************************
@@ -746,8 +791,6 @@ public class SidecarClient {
             throw propagate(e);
         }
     }
-
-
 
 
     public ClientConfig getConfig() {

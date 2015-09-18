@@ -63,8 +63,8 @@ import java.net.URL;
             return this;
         }
 
-        public Builder withPayload(Object event) {
-            sidecarRequest.event = event;
+        public Builder withPayload(Object payload) {
+            sidecarRequest.event = payload;
             return this;
         }
 
