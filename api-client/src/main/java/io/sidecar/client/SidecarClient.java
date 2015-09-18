@@ -400,6 +400,28 @@ public class SidecarClient {
     }
 
     @SuppressWarnings({"unchecked", "unused"})
+    public List<UUID> getGroupMembers(UUID groupId) {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/group/" + groupId.toString()  + "/members");
+            SidecarGetRequest sidecarGetRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .build();
+            SidecarResponse response = sidecarGetRequest.send();
+
+            if (response.getStatusCode() == 200) {
+                return Collections.checkedList(mapper.readValue(response.getBody(), List.class), UUID.class);
+            } else {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+
+    @SuppressWarnings({"unchecked", "unused"})
     public List<UUID> getGroupsForUser(String emailAddress) {
         try {
             URL endpoint = fullUrlForPath("/rest/v1/provision/user/" + emailAddress + "/groups");
@@ -419,6 +441,8 @@ public class SidecarClient {
             throw propagate(e);
         }
     }
+
+
 
     /**************************************
      * Device Provisioning Methods
