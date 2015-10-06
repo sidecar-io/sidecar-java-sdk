@@ -1,0 +1,12 @@
+-keep class null {
+    <init>();
+    void attachBaseContext(android.content.Context);
+}
+-keep class sidecar.io.sidecarandroidsample.LoginActivity { <init>(); }
+-keep class sidecar.io.sidecarandroidsample.DisplayMessageActivity { <init>(); }
+-keep public class * extends android.app.backup.BackupAgent {
+    <init>();
+}
+-keep public class * extends java.lang.annotation.Annotation {
+    *;
+}

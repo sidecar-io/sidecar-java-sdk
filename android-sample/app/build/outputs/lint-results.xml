@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="4" by="lint 24.3.3">
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `java.applet`. Referenced from `bsh.util.AWTDemoApplet`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `java.awt.event`. Referenced from `bsh.util.AWTConsole`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `java.awt.peer`. Referenced from `bsh.util.AWTConsole`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `java.awt`. Referenced from `bsh.util.AWTConsole`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.servlet.http`. Referenced from `bsh.servlet.BshServlet`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing.border`. Referenced from `bsh.util.ClassBrowser`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing.event`. Referenced from `bsh.util.ClassBrowser`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing.plaf.basic`. Referenced from `bsh.util.ClassBrowser`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing.text`. Referenced from `bsh.util.JConsole`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing.tree`. Referenced from `bsh.util.ClassBrowser`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.swing`. Referenced from `bsh.util.BshCanvas`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/org.beanshell/bsh/2.0b4/a05f0a0feefa8d8467ac80e16e7de071489f0d9c/bsh-2.0b4.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `java.nio.file`. Referenced from `okio.Okio`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.4.0/5b72bf48563ea8410e650de14aa33ff69a3e8c35/okio-1.4.0.jar"/>
+    </issue>
+
+    <issue
+        id="InvalidPackage"
+        severity="Error"
+        message="Invalid package reference in library; not included in Android: `javax.xml.bind`. Referenced from `io.sidecar.security.SecurityUtils`."
+        category="Correctness"
+        priority="6"
+        summary="Package not included in Android"
+        explanation="This check scans through libraries looking for calls to APIs that are not included in Android.
+
+When you create Android projects, the classpath is set up such that you can only access classes in the API packages that are included in Android. However, if you add other projects to your libs/ folder, there is no guarantee that those .jar files were built with an Android specific classpath, and in particular, they could be accessing unsupported APIs such as java.applet.
+
+This check scans through library jars and looks for references to API packages that are not included in Android and flags these. This is only an error if your code calls one of the library classes which wind up referencing the unsupported package.">
+        <location
+            file="/Users/whaley/.m2/repository/io/sidecar/security/1.0-SNAPSHOT/security-1.0-SNAPSHOT.jar"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.layout.activity_display_message` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.">
+        <location
+            file="/Users/whaley/QSense/repos/java-sdk/android-sample/app/src/main/res/layout/activity_display_message.xml"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        severity="Warning"
+        message="The resource `R.menu.menu_display_message` appears to be unused"
+        category="Performance"
+        priority="3"
+        summary="Unused resources"
+        explanation="Unused resources make applications larger and slow down builds.">
+        <location
+            file="/Users/whaley/QSense/repos/java-sdk/android-sample/app/src/main/res/menu/menu_display_message.xml"/>
+    </issue>
+
+</issues>

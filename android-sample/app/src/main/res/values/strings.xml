@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Sidecar Android Sample</string>
-    <string name="title_activity_display_message">DisplayMessageActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-</resources>
