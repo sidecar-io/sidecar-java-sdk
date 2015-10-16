@@ -94,11 +94,7 @@ public class SidecarClient {
                             .build();
             SidecarResponse response = sidecarGetRequest.send();
 
-            if (response.getStatusCode() == 200) {
-                return true;
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
+            return response.getStatusCode() == 200;
         } catch (Exception e) {
             throw propagate(e);
         }
@@ -114,11 +110,7 @@ public class SidecarClient {
                             .build();
             SidecarResponse response = sidecarGetRequest.send();
 
-            if (response.getStatusCode() == 200) {
-                return true;
-            } else {
-                throw new SidecarClientException(response.getStatusCode(), response.getBody());
-            }
+            return response.getStatusCode() == 200;
         } catch (Exception e) {
             throw propagate(e);
         }

@@ -9,22 +9,16 @@ public final class User {
 
     private final UUID userId;
     private final String username;
-    private final String password;
     private ImmutableMap<String,String> metadata;
 
     private User(Builder builder) {
         userId = builder.userId;
-        password = builder.password;
         username = builder.username;
         metadata = (builder.metadata == null) ? ImmutableMap.<String,String>of() : ImmutableMap.copyOf(builder.metadata);
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public UUID getUserId() {
@@ -39,7 +33,6 @@ public final class User {
     public static final class Builder {
 
         private UUID userId = UUID.randomUUID();
-        private String password;
         private String username;
         private Map<String,String> metadata;
 
@@ -54,18 +47,12 @@ public final class User {
          */
         public Builder(User original) {
             userId = original.userId;
-            password = original.password;
             username = original.username;
             metadata = original.metadata;
         }
 
         public Builder userId(UUID userId) {
             this.userId = userId;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
             return this;
         }
 
