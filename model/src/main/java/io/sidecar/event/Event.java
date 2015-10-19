@@ -169,7 +169,7 @@ public final class Event {
     }
 
     /**
-     * Optional fields, but if provided the properties can be used in the Query
+     * Get the location (latitude and longitude) of the origin of this Event.
      *
      * @return geo-location latitude and longitude
      */
@@ -177,14 +177,15 @@ public final class Event {
         return location;
     }
 
+    /**
+     * An Optional list of {@link KeyTag}s where each entry in the List corresponds to a set of tags to be applied to
+     * the individual keys found the readings encapsulated by this Event.
+     * @return a List of Keytags, or an empty list if there are no keytags
+     */
     public ImmutableList<KeyTag> getKeytags() {
         return (keytags != null) ? keytags : ImmutableList.<KeyTag>of();
     }
 
-    @SuppressWarnings("unused")
-    private List<KeyTag> getKeyTagsNull() {
-        return keytags;
-    }
 
     @Override
     public String toString() {
@@ -281,6 +282,7 @@ public final class Event {
             return this;
         }
 
+        @SuppressWarnings("unused")
         public Builder readings(Reading... readings) {
             this.readings = Arrays.asList(readings);
             return this;
