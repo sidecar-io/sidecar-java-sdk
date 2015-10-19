@@ -361,7 +361,6 @@ public class SidecarClient {
                             .withSignatureVersion(ONE)
                             .build();
             SidecarResponse response = sidecarRequest.send();
-            // check for an no content response code
             if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -499,7 +498,6 @@ public class SidecarClient {
                             .build();
             SidecarResponse response = sidecarPostRequest.send();
 
-            //The response body is empty if 204, so only check if we do not have a 204 response
             if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
