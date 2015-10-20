@@ -186,6 +186,11 @@ public final class Event {
         return (keytags != null) ? keytags : ImmutableList.<KeyTag>of();
     }
 
+    @SuppressWarnings("unused")  //Used by jackson
+    private List<KeyTag> getKeyTagsNull() {
+        return keytags;
+    }
+
 
     @Override
     public String toString() {
