@@ -219,7 +219,7 @@ public class SidecarClient {
     public AccessKey updateAccessKeyForUser(String emailAddress, String password) {
         try {
             Credential credential = new Credential(emailAddress, password);
-            URL endpoint = fullUrlForPath("/rest/v1/provision/accesskey");
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/accesskey");
             SidecarPutRequest sidecarPutRequest =
                     new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
