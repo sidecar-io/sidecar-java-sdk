@@ -164,6 +164,12 @@ public final class Event {
         return stream;
     }
 
+    /**
+     * Tags are optional user defined metadata. A tag should not contain whitespace.
+     *
+     *
+     * @return an array of valid tags (no whitespace)
+     */
     public ImmutableSet<String> getTags() {
         return (tags != null) ? tags : ImmutableSet.<String>of();
     }
