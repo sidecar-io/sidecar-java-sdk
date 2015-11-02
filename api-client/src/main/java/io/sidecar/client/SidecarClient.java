@@ -164,7 +164,6 @@ public class SidecarClient {
     /**************************************
      * User and Group Provisioning Methods
      *************************************/
-
     // User...
     @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
@@ -202,6 +201,26 @@ public class SidecarClient {
             SidecarResponse response = sidecarRequest.send();
             // check for an no content response code
             if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public Integer getUserCountForApplication() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/user/count");
+            SidecarGetRequest sidecarRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            if (response.getStatusCode() == 200) {
+                return (Integer)mapper.readValue(response.getBody(), Map.class).get("count");
+            } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
@@ -535,6 +554,26 @@ public class SidecarClient {
 
             //The response body is empty if 204, so only check if we do not have a 204 response
             if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public Integer getDeviceCountForApplication() {
+        try {
+            URL endpoint = fullUrlForPath("/rest/v1/provision/application/device/count");
+            SidecarGetRequest sidecarRequest =
+                    new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withUrl(endpoint)
+                            .withSignatureVersion(ONE)
+                            .build();
+            SidecarResponse response = sidecarRequest.send();
+            if (response.getStatusCode() == 200) {
+                return (Integer)mapper.readValue(response.getBody(), Map.class).get("count");
+            } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
         } catch (Exception e) {
