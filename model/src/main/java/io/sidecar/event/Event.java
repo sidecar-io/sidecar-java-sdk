@@ -61,19 +61,19 @@ public final class Event {
                   List<KeyTag> keytags) {
         this.id = id;
 
-        checkNotNull(deviceId);
+        checkNotNull(deviceId, "deviceId must be present");
         this.deviceId = deviceId;
 
-        checkNotNull(timestamp);
+        checkNotNull(timestamp, "ts must be present");
         this.timestamp = new DateTime(timestamp, DateTimeZone.UTC);
 
-        checkArgument(ModelUtils.isValidStreamId(stream));
+        checkArgument(ModelUtils.isValidStreamId(stream), "stream must be non-blank and must not contain whitespace");
         this.stream = stream.toLowerCase();
 
-        checkNotNull(location);
+        checkNotNull(location, "location must be present");
         this.location = location;
 
-        checkNotNull(readings);
+        checkNotNull(readings, "readings must be present");
         this.readings = filterNulls(readings);
 
         this.tags = (tags == null) ? null : filterBlankTags(tags);
@@ -110,7 +110,7 @@ public final class Event {
             public boolean apply(String input) {
                 return CharMatcher.WHITESPACE.matchesNoneOf(input);
             }
-        }));
+        }), "tags or keytags must contain no whitespace characters");
     }
 
     private void checkAllKeyTagsKeysAreValid() {

@@ -16,6 +16,7 @@
 
 package io.sidecar.jackson;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
@@ -81,6 +82,19 @@ public class ModelMapper extends ObjectMapper {
     }
 
     /**
+     * Used to deserialize an object that can deserialize properly from a JsonParser, but without
+     * checked exceptions.
+     */
+    @SuppressWarnings("unused")
+    public <T> T readValueUnchecked(JsonParser jp, Class<T> cl) {
+        try {
+            return readValue(jp, cl);
+        } catch (IOException e) {
+            throw propagate(e);
+        }
+    }
+
+    /**
      * Used to deserialize an object that can deserialize properly from a String, but without
      * checked exceptions.
      */
@@ -88,7 +102,7 @@ public class ModelMapper extends ObjectMapper {
     public <T> T readValueUnchecked(String s, Class<T> cl) {
         try {
             return readValue(s, cl);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw propagate(e);
         }
     }

@@ -16,11 +16,10 @@
 
 package io.sidecar.event;
 
-import static org.testng.Assert.*;
-
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,11 +34,16 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.sidecar.jackson.ModelMapper;
+import io.sidecar.jackson.SidecarJsonMappingException;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -116,7 +120,7 @@ public class EventJsonValidationTest {
         Event before = mapper.readValue(eventAsObjectNode.traverse(), Event.class);
         ObjectNode serialized = mapper.valueToTree(before);
         assertTrue(serialized.path("id").isMissingNode());
-        assertEquals(mapper.treeToValue(serialized,Event.class), before);
+        assertEquals(mapper.treeToValue(serialized, Event.class), before);
     }
 
     @Test(description = "Assert that an event can't be created when deviceId isn't a UUID",

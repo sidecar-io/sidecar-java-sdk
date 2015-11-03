@@ -29,14 +29,12 @@ public class KeyTag {
     /**
      * Optional tags that can be added to named reading keys.
      *
-     * @param key - The associated key name in the reading
+     * @param key  - The associated key name in the reading
      * @param tags - A list of tags to apply to
      */
     public KeyTag(String key, Set<String> tags) {
-        checkNotNull(key);
-        this.key = key;
-        checkNotNull(tags);
-        this.tags = tags;
+        this.key = checkNotNull(key, "key must be present for a keytag");
+        this.tags = checkNotNull(tags, "tags must be present for a keytag");
     }
 
     /**
@@ -47,7 +45,6 @@ public class KeyTag {
     }
 
     /**
-     *
      * @return - The list of tags for the named reading key
      */
     public Set<String> getTags() {
