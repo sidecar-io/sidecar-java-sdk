@@ -1,3 +1,5 @@
+## Sidecar Java Client
+
 **Note** - The API of this client is still considered unstable as the Sidecar Platform API continues to be worked on.  If there is an unexpected error, please file an issue with as many details as you can reasonably provide.
 
 ---------------------------------------
