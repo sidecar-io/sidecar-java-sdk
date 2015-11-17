@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
 /**
  * A Sidecar API Client used to access functionality on behalf of a User.  This client requires a set of valid
  * and active AccessKeys for a given User.
- *
  */
 @SuppressWarnings("unused")
 public class SidecarUserClient {
@@ -68,7 +67,7 @@ public class SidecarUserClient {
 
 
     /**************************************
-     * Authentication and Keyset Methods
+     * Authentication
      *************************************/
     public boolean checkUserKeyset() {
         try {
@@ -88,9 +87,8 @@ public class SidecarUserClient {
 
 
     /**************************************
-     * Event Publication Methods
+     * Event Publication
      *************************************/
-
     public UUID postEvent(Event event) {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/event");
@@ -116,7 +114,7 @@ public class SidecarUserClient {
     }
 
     /**************************************
-     * User and Group Provisioning Methods
+     * User and Group Provisioning
      *************************************/
     public void updateUserMetadata(Map<String, String> metaData) {
         try {
@@ -137,6 +135,7 @@ public class SidecarUserClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, String> getUserMetadata() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user");
@@ -148,7 +147,8 @@ public class SidecarUserClient {
             SidecarResponse response = sidecarGetRequest.send();
 
             if (response.getStatusCode() == 200) {
-                return castResponseToMapStringString(response);
+                return Collections.checkedMap(mapper.readValue(response.getBody(), Map.class),
+                        String.class, String.class);
 
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
@@ -156,12 +156,6 @@ public class SidecarUserClient {
         } catch (Exception e) {
             throw propagate(e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, String> castResponseToMapStringString(SidecarResponse response) throws java.io.IOException {
-        Map<String,String> metadata = mapper.readValue(response.getBody(),Map.class);
-        return Collections.checkedMap(metadata, String.class, String.class);
     }
 
     public UUID userIdForUserAddress(String emailAddress) {
@@ -269,7 +263,7 @@ public class SidecarUserClient {
         }
     }
 
-    @SuppressWarnings({"unchecked", "unused"})
+    @SuppressWarnings("unchecked")
     public List<UUID> getGroupMembers(UUID groupId) {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + groupId.toString() + "/members");
@@ -361,6 +355,7 @@ public class SidecarUserClient {
     /**************************************
      * Device Provisioning Methods
      *************************************/
+
     public void provisionDevice(UUID deviceId) {
         Map<String, String> metaData = new HashMap<>();
         metaData.put("deviceId", deviceId.toString());
@@ -401,6 +396,7 @@ public class SidecarUserClient {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public Map<String, String> getUserDeviceMetadata(UUID deviceId) {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
@@ -412,7 +408,8 @@ public class SidecarUserClient {
             SidecarResponse response = sidecarGetRequest.send();
 
             if (response.getStatusCode() == 200) {
-                return castResponseToMapStringString(response);
+                return Collections.checkedMap(mapper.readValue(response.getBody(), Map.class),
+                        String.class, String.class);
             } else {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
             }
@@ -440,7 +437,7 @@ public class SidecarUserClient {
         }
     }
 
-    @SuppressWarnings({"unused", "unchecked"})
+    @SuppressWarnings("unchecked")
     public List<Device> getDevicesForUser() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/devices");
@@ -568,7 +565,7 @@ public class SidecarUserClient {
         }
     }
 
-    @SuppressWarnings({"unused", "unchecked"})
+    @SuppressWarnings("unchecked")
     public List<NotificationRule> getNotificationRules() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rules");

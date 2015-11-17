@@ -30,7 +30,8 @@ import java.net.URL;
 
 /**
  * A Sidecar API Client used to access functionality on behalf of an Application.  This client requires a set of valid
- * and active AccessKeys for a given Application.
+ * and active AccessKeys for a given Application.  This client is used to perform basic API management of users and to
+ * access a limited number of statistics regarding the Application
  */
 @SuppressWarnings("unused")
 public class SidecarApplicationClient {
@@ -41,7 +42,6 @@ public class SidecarApplicationClient {
     private final AccessKey accessKey;
     private final ModelMapper mapper = new ModelMapper();
 
-    @SuppressWarnings("unused")
     public SidecarApplicationClient(AccessKey accessKey) {
         this(accessKey, new ClientConfig());
     }
@@ -52,12 +52,12 @@ public class SidecarApplicationClient {
     }
 
     /**
-     * Given a username and password, obtain that user's AccessKey's for this application if that user exists.
+     * Authenticate a user with a set of credentials.  If the credentials are valid, then an AccessKey is returned that
+     * may be used in a {@link SidecarUserClient} to make API requests on that User's behalf.
      *
-     * @param credential The user's credentials.
+     * @param credential The user's credentials
      * @return AccessKeys for the user identified by the provided Credentials
      */
-    @SuppressWarnings("unused")
     public AccessKey authenticateUser(Credential credential) {
 
         try {
@@ -82,7 +82,13 @@ public class SidecarApplicationClient {
         }
     }
 
-    public boolean checkApplicationKeyset() {
+    /**
+     * This is a convenience method to determine whether the AccessKey instance used to initialize this client is valid.
+     * A RuntimeException will be thrown from this method if communication to the Sidecar platform cannot be made.
+     *
+     * @return true if authentication with the passed in Keyset authenticates correctly,  false if not
+     */
+    public boolean isClientAuthenticated() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/application/status");
             SidecarGetRequest sidecarGetRequest =
@@ -98,8 +104,6 @@ public class SidecarApplicationClient {
         }
     }
 
-    // User...
-    @SuppressWarnings("unused")
     public AccessKey createNewUser(String emailAddress, String password) {
         try {
             Credential credential = new Credential(emailAddress, password);
@@ -121,7 +125,6 @@ public class SidecarApplicationClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public void deleteUser(String emailAddress, String password) {
         try {
             Credential credential = new Credential(emailAddress, password);
@@ -142,7 +145,6 @@ public class SidecarApplicationClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public int getUserCountForApplication() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/application/user/count");
@@ -162,7 +164,6 @@ public class SidecarApplicationClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public int getDeviceCountForApplication() {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/application/device/count");
@@ -182,8 +183,6 @@ public class SidecarApplicationClient {
         }
     }
 
-
-    @SuppressWarnings("unused")
     public AccessKey createAccessKeyForUser(String emailAddress, String password) {
         try {
             Credential credential = new Credential(emailAddress, password);
@@ -205,7 +204,6 @@ public class SidecarApplicationClient {
         }
     }
 
-    @SuppressWarnings("unused")
     public AccessKey updateAccessKeyForUser(String emailAddress, String password) {
         try {
             Credential credential = new Credential(emailAddress, password);
