@@ -19,6 +19,7 @@ package io.sidecar.client;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.propagate;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public final class ClientConfig {
@@ -41,6 +42,15 @@ public final class ClientConfig {
         try {
             return new URL(s);
         } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
+    URL fullUrlForPath(String path) {
+        try {
+            URL baseUrl = getRestApiBasePath();
+            return new URL(baseUrl.toString() + path);
+        } catch (MalformedURLException e) {
             throw propagate(e);
         }
     }
