@@ -24,10 +24,12 @@ import java.net.URL;
 
 public final class ClientConfig {
 
+    private static final String DEFAULT_PUBLIC_RESOURCE_ROOT = "http://api.sidecar.io";
+
     final private URL restApiBasePath;
 
     public ClientConfig() {
-        this(urlFromString("http://localhost:8080/rest-api"));
+        this(urlFromString(DEFAULT_PUBLIC_RESOURCE_ROOT));
     }
 
     public ClientConfig(URL baseUrl) {
