@@ -19,6 +19,7 @@ package io.sidecar.notification;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 
@@ -32,5 +33,9 @@ abstract class EventNotificationMixin {
                                    @JsonProperty("ts") DateTime timestamp) {}
 
     @JsonGetter("ts")
+    abstract String getTimestampAsIso8601String();
+
+    @JsonIgnore
     abstract DateTime getTimestamp();
+
 }

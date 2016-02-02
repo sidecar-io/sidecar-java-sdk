@@ -76,6 +76,11 @@ public class EventNotification {
         return timestamp;
     }
 
+    @SuppressWarnings("unused") //This is required to exist for Mixins during serialization
+    private String getTimestampAsIso8601String() {
+        return getTimestamp().toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
