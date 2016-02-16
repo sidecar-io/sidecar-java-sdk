@@ -116,6 +116,29 @@ public class SidecarUserClient {
     /**************************************
      * User and Group Provisioning
      *************************************/
+    public void updateUserPassword(String currentPassword, String newPassword) {
+        try {
+            Map<String, String> info = new HashMap<>();
+            info.put("currentPassword", currentPassword);
+            info.put("newPassword", newPassword);
+            String payloadAsJason = mapper.writeValueAsString(info);
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/password");
+            SidecarPutRequest sidecarPutRequest =
+                    new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
+                            .withSignatureVersion(ONE)
+                            .withUrl(endpoint)
+                            .withPayload(payloadAsJason)
+                            .build();
+            SidecarResponse response = sidecarPutRequest.send();
+
+            if (response.getStatusCode() != 204) {
+                throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            }
+        } catch (Exception e) {
+            throw propagate(e);
+        }
+    }
+
     public void updateUserMetadata(Map<String, String> metaData) {
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user");
