@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import io.sidecar.jackson.ModelMapper;
 
+import static java.util.UUID.randomUUID;
 import static org.testng.Assert.assertEquals;
 
 public class UserGroupJsonValidationTest {
@@ -32,10 +33,10 @@ public class UserGroupJsonValidationTest {
             "UserGroup object")
     public void toAndFromJsonProducesEqual() throws Exception {
         UserGroup original = new UserGroup.Builder()
-                .id(UUID.randomUUID())
-                .appendMember(new UserGroupMember(UUID.randomUUID(), UserGroupRole.ADMIN))
-                .appendDeviceId(UUID.randomUUID())
-                .appId(UUID.randomUUID())
+                .id(randomUUID())
+                .appendMember(new UserGroupMember(randomUUID(), UserGroupRole.ADMIN))
+                .appendDeviceId(randomUUID().toString())
+                .appId(randomUUID())
                 .name("Test Group")
                 .build();
 

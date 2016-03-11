@@ -19,7 +19,6 @@ package io.sidecar.event;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,7 +33,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.sidecar.jackson.ModelMapper;
-import io.sidecar.jackson.SidecarJsonMappingException;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -72,8 +70,7 @@ public class EventJsonValidationTest {
         Event event = mapper.readValue(validEventAsJsonString, Event.class);
 
         assertEquals(event.getId(), UUID.fromString(eventAsObjectNode.path("id").textValue()));
-        assertEquals(event.getDeviceId(),
-                UUID.fromString(eventAsObjectNode.path("deviceId").textValue()));
+        assertEquals(event.getDeviceId(),eventAsObjectNode.path("deviceId").textValue());
         assertEquals(event.getStream(), eventAsObjectNode.path("stream").asText());
 
         assertTrue(event.getTimestamp().isEqual(new DateTime(eventAsObjectNode.path("ts").textValue())));
@@ -121,13 +118,6 @@ public class EventJsonValidationTest {
         ObjectNode serialized = mapper.valueToTree(before);
         assertTrue(serialized.path("id").isMissingNode());
         assertEquals(mapper.treeToValue(serialized, Event.class), before);
-    }
-
-    @Test(description = "Assert that an event can't be created when deviceId isn't a UUID",
-            expectedExceptions = JsonMappingException.class)
-    public void invalidWhenEventDeviceIdIsNotUuid() throws Exception {
-        eventAsObjectNode.put("deviceId", "not-a-uuid");
-        mapper.readValue(eventAsObjectNode.traverse(), Event.class);
     }
 
     @Test(description = "Assert that an event can't be created when deviceId is missing",

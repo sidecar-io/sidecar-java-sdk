@@ -28,7 +28,7 @@ public class QueryWithIds {
     private final UUID appId;
     private final UUID userId; // initially from accessInfo
     private final List<UUID> members; // from a getUsersInGroup call.
-    private final UUID deviceId;
+    private final String deviceId;
 
     private QueryWithIds(Builder builder) {
         query = builder.query;
@@ -56,7 +56,7 @@ public class QueryWithIds {
         return members;
     } // users in groups
 
-    public UUID getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
@@ -75,7 +75,7 @@ public class QueryWithIds {
     public static final class Builder {
 
         private Query query;
-        private UUID deviceId;
+        private String deviceId;
         private UUID userId;
         private UUID appId;
         private UUID orgId;
@@ -98,7 +98,7 @@ public class QueryWithIds {
             return this;
         }
 
-        public Builder deviceId(UUID deviceId) {
+        public Builder deviceId(String deviceId) {
             this.deviceId = deviceId;
             return this;
         }

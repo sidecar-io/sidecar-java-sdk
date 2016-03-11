@@ -37,8 +37,8 @@ public class UserAnswerBucketJsonValidationTest {
         Event event = mapper.readValue(expectedJson.path("answer").path("events").get(0).traverse(), Event.class);
 
         RawEventsAnswer rawEventsAnswer = RawEventsAnswer.fromEvents(event);
-        UserAnswerBucket<RawEventsAnswer> uab = new UserAnswerBucket<RawEventsAnswer>(UUID.fromString(expectedJson.path("userId").asText()),
-                UUID.fromString(expectedJson.path("deviceId").asText()), rawEventsAnswer);
+        UserAnswerBucket<RawEventsAnswer> uab = new UserAnswerBucket<>(UUID.fromString(expectedJson.path("userId").asText()),
+                expectedJson.path("deviceId").asText(), rawEventsAnswer);
 
         JsonNode actualJson = mapper.readTree(mapper.writeValueAsBytes(uab));
 

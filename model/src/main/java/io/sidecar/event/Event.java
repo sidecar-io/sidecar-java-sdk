@@ -18,6 +18,7 @@ package io.sidecar.event;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.sidecar.ModelUtils.isValidDeviceId;
 import static io.sidecar.util.CollectionUtils.filterNulls;
 
 import java.util.Arrays;
@@ -43,7 +44,7 @@ import org.joda.time.DateTimeZone;
 public final class Event {
 
     private final UUID id;
-    private final UUID deviceId;
+    private final String deviceId;
     private final DateTime timestamp;
     private final String stream;
     private final Location location;
@@ -56,12 +57,13 @@ public final class Event {
         this(b.id, b.deviceId, b.timestamp, b.stream, b.tags, b.location, b.readings, b.keytags);
     }
 
-    private Event(UUID id, UUID deviceId, DateTime timestamp, String stream,
+    private Event(UUID id, String deviceId, DateTime timestamp, String stream,
                   Collection<String> tags, Location location, List<Reading> readings,
                   List<KeyTag> keytags) {
         this.id = id;
 
-        checkNotNull(deviceId, "deviceId must be present");
+        checkArgument(isValidDeviceId(deviceId),
+                "Invalid DeviceId of %s - must be between 8-40 valid characters", deviceId);
         this.deviceId = deviceId;
 
         checkNotNull(timestamp, "ts must be present");
@@ -137,7 +139,7 @@ public final class Event {
      *
      * @return the unique device identifier
      */
-    public UUID getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
@@ -257,7 +259,7 @@ public final class Event {
     public static class Builder {
 
         private UUID id;
-        private UUID deviceId;
+        private String deviceId;
         private DateTime timestamp;
         private String stream;
         private Location location;
@@ -284,7 +286,7 @@ public final class Event {
             return this;
         }
 
-        public Builder deviceId(UUID deviceId) {
+        public Builder deviceId(String deviceId) {
             this.deviceId = deviceId;
             return this;
         }

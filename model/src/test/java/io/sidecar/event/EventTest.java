@@ -37,7 +37,7 @@ public class EventTest {
         return new Event.Builder()
                 .id(randomUUID())
                 .timestamp(DateTime.now(DateTimeZone.UTC))
-                .deviceId(UUID.randomUUID())
+                .deviceId(UUID.randomUUID().toString())
                 .stream("streamname")
                 .tags(Sets.newHashSet("foo", "bar"))
                 .location(new Location(0.0, 0.0))

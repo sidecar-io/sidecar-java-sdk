@@ -37,7 +37,7 @@ import org.joda.time.DateTime;
 abstract class EventMixin {
 
     private EventMixin(@JsonProperty("id") UUID id,
-                       @JsonProperty("deviceId") UUID deviceId,
+                       @JsonProperty("deviceId") String deviceId,
                        @JsonProperty("ts") DateTime timestamp,
                        @JsonProperty("stream") String streamName,
                        @JsonProperty("tags") Collection<String> tags,

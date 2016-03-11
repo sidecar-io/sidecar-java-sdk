@@ -21,6 +21,8 @@ import com.google.common.collect.ImmutableList;
 import io.sidecar.query.Arg;
 import org.apache.commons.lang.StringUtils;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 
 public class ModelUtils {
 
@@ -41,4 +43,10 @@ public class ModelUtils {
         return null;
     }
 
+    //Accept all ASCII punctuation, digits, and letters
+    private static final CharMatcher ASCII_NO_WHITESPACE_OR_NON_PRINTING = CharMatcher.inRange('!','~');
+    public static boolean isValidDeviceId(String deviceId) {
+        return StringUtils.isNotBlank(deviceId) && deviceId.length() >= 8 && deviceId.length() <= 40 &&
+                ASCII_NO_WHITESPACE_OR_NON_PRINTING.matchesAllOf(deviceId);
+    }
 }

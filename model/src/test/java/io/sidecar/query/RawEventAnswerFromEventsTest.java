@@ -38,7 +38,7 @@ public class RawEventAnswerFromEventsTest {
         DateTime dateTime = DateTime.now(DateTimeZone.UTC);
 
         Event.Builder builder = new Event.Builder()
-                .deviceId(UUID.randomUUID())
+                .deviceId(UUID.randomUUID().toString())
                 .timestamp(dateTime)
                 .stream("stream")
                 .tags(Sets.newHashSet("tag"))

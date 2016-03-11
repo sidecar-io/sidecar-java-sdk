@@ -21,17 +21,25 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.sidecar.ModelUtils.isValidDeviceId;
+
 public class Device {
 
     private UUID userId;
     private UUID appId;
-    private UUID deviceId;
+    private String deviceId;
     private ImmutableMap<String,String> metadata;
 
     private Device(Builder builder) {
-        userId = builder.userId;
+        userId = checkNotNull(builder.userId);
+
+        checkArgument(isValidDeviceId(builder.deviceId),
+                "Invalid DeviceId of %s - must be between 8-40 valid characters", builder.deviceId);
         deviceId = builder.deviceId;
-        appId = builder.appId;
+
+        appId = checkNotNull(builder.appId);
         metadata =  (builder.metadata == null) ? ImmutableMap.<String,String>of() : ImmutableMap.copyOf(builder.metadata);
     }
 
@@ -39,7 +47,7 @@ public class Device {
         return userId;
     }
 
-    public UUID getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
@@ -54,7 +62,7 @@ public class Device {
     public static final class Builder {
 
         private UUID userId;
-        private UUID deviceId;
+        private String deviceId;
         private UUID appId;
         private Map<String,String> metadata;
 
@@ -73,7 +81,7 @@ public class Device {
             return this;
         }
 
-        public Builder deviceId(UUID deviceId) {
+        public Builder deviceId(String deviceId) {
             this.deviceId = deviceId;
             return this;
         }

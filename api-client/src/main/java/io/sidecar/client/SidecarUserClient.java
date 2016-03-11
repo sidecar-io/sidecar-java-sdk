@@ -20,6 +20,7 @@ import static com.google.common.base.Throwables.propagate;
 import static io.sidecar.security.signature.SignatureVersion.Version.ONE;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Throwables;
 import io.sidecar.access.AccessKey;
 import io.sidecar.event.Event;
 import io.sidecar.jackson.ModelMapper;
@@ -183,7 +185,7 @@ public class SidecarUserClient {
 
     public UUID userIdForUserAddress(String emailAddress) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/" + emailAddress);
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/" + encode(emailAddress));
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -229,7 +231,7 @@ public class SidecarUserClient {
     public UserGroup getGroupById(UUID groupId) {
         try {
 
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + groupId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + encode(groupId.toString()));
             SidecarGetRequest
                     sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
@@ -250,7 +252,7 @@ public class SidecarUserClient {
 
     public void deleteGroup(UUID groupId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + groupId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + encode(groupId.toString()));
             SidecarDeleteRequest sidecarRequest =
                     new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withUrl(endpoint)
@@ -267,7 +269,8 @@ public class SidecarUserClient {
 
     public UserGroup addUserToUserGroup(UserGroup userGroup, UserGroupMember member) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + userGroup.getId() + "/members");
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" +
+                    encode(userGroup.getId().toString()) + "/members");
             SidecarPostRequest sidecarPostRequest =
                     new SidecarPostRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -289,7 +292,8 @@ public class SidecarUserClient {
     @SuppressWarnings("unchecked")
     public List<UUID> getGroupMembers(UUID groupId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + groupId.toString() + "/members");
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + encode(groupId.toString())
+                    + "/members");
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -309,8 +313,9 @@ public class SidecarUserClient {
 
     public UserGroup removeMemberFromGroup(UserGroup group, UUID userId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + group.getId().toString() + "/members/" +
-                    userId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + encode(group.getId().toString())
+                    + "/members/" + encode(userId.toString()));
+
             SidecarDeleteRequest sidecarDeleteRequest =
                     new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -330,8 +335,9 @@ public class SidecarUserClient {
 
     public UserGroup changeRoleForGroupMember(UserGroup group, UUID userId, Role newRole) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + group.getId().toString() + "/members/" +
-                    userId.toString() + "/role");
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/group/" + encode(group.getId().toString())
+                    + "/members/" + encode(userId.toString()) + "/role");
+
             ObjectNode roleJson = JsonNodeFactory.instance.objectNode();
             roleJson.put("role", newRole.roleName);
             SidecarPutRequest sidecarPutRequest =
@@ -356,7 +362,7 @@ public class SidecarUserClient {
     @SuppressWarnings({"unchecked", "unused"})
     public List<UUID> getGroupsForUser(String emailAddress) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/" + emailAddress + "/groups");
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/" + encode(emailAddress) + "/groups");
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -379,9 +385,9 @@ public class SidecarUserClient {
      * Device Provisioning Methods
      *************************************/
 
-    public void provisionDevice(UUID deviceId) {
+    public void provisionDevice(String deviceId) {
         Map<String, String> metaData = new HashMap<>();
-        metaData.put("deviceId", deviceId.toString());
+        metaData.put("deviceId", deviceId);
         try {
             URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device");
             SidecarPostRequest sidecarPostRequest =
@@ -400,9 +406,9 @@ public class SidecarUserClient {
         }
     }
 
-    public void deprovisionDevice(UUID deviceId) {
+    public void deprovisionDevice(String deviceId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + encode(deviceId));
             SidecarDeleteRequest sidecarDeleteRequest =
                     new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -420,9 +426,9 @@ public class SidecarUserClient {
     }
 
     @SuppressWarnings("unchecked")
-    public Map<String, String> getUserDeviceMetadata(UUID deviceId) {
+    public Map<String, String> getUserDeviceMetadata(String deviceId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + encode(deviceId));
             SidecarGetRequest sidecarGetRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -441,9 +447,9 @@ public class SidecarUserClient {
         }
     }
 
-    public void updateUserDeviceMetadata(UUID deviceId, Map<String, String> metaData) {
+    public void updateUserDeviceMetadata(String deviceId, Map<String, String> metaData) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + deviceId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/device/" + encode(deviceId));
             SidecarPutRequest sidecarPutRequest =
                     new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -547,7 +553,8 @@ public class SidecarUserClient {
         payload.put("max", max);
 
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" +
+                    encode(ruleId.toString()));
             SidecarPutRequest sidecarPutRequest =
                     new SidecarPutRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -569,7 +576,8 @@ public class SidecarUserClient {
 
     public NotificationRule getNotificationRule(UUID ruleId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" +
+                    encode(ruleId.toString()));
             SidecarGetRequest sidecarPostRequest =
                     new SidecarGetRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -613,7 +621,8 @@ public class SidecarUserClient {
 
     public void deleteNotificationRule(UUID ruleId) {
         try {
-            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" + ruleId.toString());
+            URL endpoint = clientConfig.fullUrlForPath("/rest/v1/provision/user/notifications/rule/" +
+                    encode(ruleId.toString()));
             SidecarDeleteRequest sidecarDeleteRequest =
                     new SidecarDeleteRequest.Builder(accessKey.getKeyId(), "", accessKey.getSecret())
                             .withSignatureVersion(ONE)
@@ -634,12 +643,12 @@ public class SidecarUserClient {
      * Query Methods
      *************************************/
     public List<UserAnswerBucket> postUserQuery(String type, Query query) {
-        String path = "/rest/v1/query/user/devices/" + type;
+        String path = "/rest/v1/query/user/devices/" + encode(type);
         return postUserBasedQuery(path, query);
     }
 
-    public List<UserAnswerBucket> postUserDeviceQuery(String type, UUID deviceId, Query query) {
-        String path = "/rest/v1/query/user/device/" + deviceId.toString() + "/" + type;
+    public List<UserAnswerBucket> postUserDeviceQuery(String type, String deviceId, Query query) {
+        String path = "/rest/v1/query/user/device/" + encode(deviceId) + "/" + encode(type);
         return postUserBasedQuery(path, query);
     }
 
@@ -663,6 +672,14 @@ public class SidecarUserClient {
             }
         } catch (Exception e) {
             throw propagate(e);
+        }
+    }
+
+    private String encode(String input) {
+        try {
+            return URLEncoder.encode(input, "utf-8");
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
         }
     }
 }

@@ -38,7 +38,7 @@ public class ModelTestUtils {
         Reading reading = new Reading("ABC", DateTime.now(DateTimeZone.UTC), 42);
         return new Event.Builder()
                 .id(UUID.randomUUID())
-                .deviceId(UUID.randomUUID())
+                .deviceId(UUID.randomUUID().toString())
                 .timestamp(DateTime.now(DateTimeZone.UTC))
                 .stream("wowza")
                 .tags(ImmutableSet.<String>of())
@@ -47,9 +47,4 @@ public class ModelTestUtils {
                 .keytags(ImmutableList.of(new KeyTag("key", Sets.newHashSet("keytag"))))
                 .build();
     }
-
-    public static Credential createSampleCredential() {
-        return new Credential("username", "password");
-    }
-
 }

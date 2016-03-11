@@ -24,10 +24,10 @@ import java.util.UUID;
 public class UserAnswerBucket<T> {
 
     private final UUID userId;
-    private final UUID deviceId;
+    private final String deviceId;
     private final T answer;
 
-    public UserAnswerBucket(UUID userId, UUID deviceId, T answer) {
+    public UserAnswerBucket(UUID userId, String deviceId, T answer) {
         checkNotNull(answer);
         checkArgument((userId != null || deviceId != null), "One id must be non-null when generating an AnswerBucket");
 
@@ -40,7 +40,7 @@ public class UserAnswerBucket<T> {
         return userId;
     }
 
-    public UUID getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 

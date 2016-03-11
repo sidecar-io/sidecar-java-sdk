@@ -25,6 +25,7 @@ import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.sidecar.ModelUtils.isValidDeviceId;
 
 public class UserGroup {
 
@@ -33,10 +34,10 @@ public class UserGroup {
     private final String name;
     private final ImmutableMap<String, String> metadata;
     private final ImmutableList<UserGroupMember> members;
-    private final ImmutableList<UUID> deviceIds;
+    private final ImmutableList<String> deviceIds;
 
     private UserGroup(UUID id, UUID appId, String name, Map<String, String> metadata,
-                      List<UserGroupMember> members, List<UUID> deviceIds) {
+                      List<UserGroupMember> members, List<String> deviceIds) {
         checkNotNull(id, "UserGroup must have a non-null id");
         this.id = id;
 
@@ -49,7 +50,15 @@ public class UserGroup {
 
         this.metadata = (metadata == null) ? ImmutableMap.<String,String>of() : ImmutableMap.copyOf(metadata);
         this.members = (members == null) ? ImmutableList.<UserGroupMember>of() : ImmutableList.copyOf(members);
-        this.deviceIds = (deviceIds == null) ? ImmutableList.<UUID>of() : ImmutableList.copyOf(deviceIds);
+        this.deviceIds = (deviceIds == null) ? ImmutableList.<String>of() : ImmutableList.copyOf(deviceIds);
+        checkAllDeviceIdsAreValid();
+    }
+
+    private void checkAllDeviceIdsAreValid() {
+        for (String deviceId: deviceIds) {
+            checkArgument(isValidDeviceId(deviceId), "Invalid DeviceId of %s found in UserGroup.  DeviceIds must be " +
+                    "between 8-40 valid characters", deviceId);
+        }
     }
 
     private UserGroup(Builder b) {
@@ -76,7 +85,7 @@ public class UserGroup {
         return members;
     }
 
-    public ImmutableList<UUID> getDeviceIds() {
+    public ImmutableList<String> getDeviceIds() {
         return deviceIds;
     }
 
@@ -143,7 +152,7 @@ public class UserGroup {
         String name;
         Map<String,String> metadata = new HashMap<>();
         List<UserGroupMember> members = new ArrayList<>();
-        List<UUID> deviceIds = new ArrayList<>();
+        List<String> deviceIds = new ArrayList<>();
 
         public UserGroup build() {
             return new UserGroup(this);
@@ -185,12 +194,12 @@ public class UserGroup {
             return this;
         }
 
-        public Builder deviceIds(List<UUID> deviceIds) {
+        public Builder deviceIds(List<String> deviceIds) {
             this.deviceIds = deviceIds;
             return this;
         }
 
-        public Builder appendDeviceId(UUID deviceId) {
+        public Builder appendDeviceId(String deviceId) {
             if (deviceId != null) {
                 deviceIds.add(deviceId);
             }
