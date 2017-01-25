@@ -23,7 +23,11 @@ import io.sidecar.event.Event;
 
 public class RawEventsAnswer implements Answer {
 
-    private final ImmutableList<Event> events;
+    private ImmutableList<Event> events;
+
+    // for jackson only
+    public RawEventsAnswer() {
+    }
 
     private RawEventsAnswer(ImmutableList<Event> events) {
         this.events = events == null ? ImmutableList.<Event>of() : events;

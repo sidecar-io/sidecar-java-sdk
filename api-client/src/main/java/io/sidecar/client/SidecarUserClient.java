@@ -400,6 +400,9 @@ public class SidecarUserClient {
 
             if (response.getStatusCode() != 204) {
                 throw new SidecarClientException(response.getStatusCode(), response.getBody());
+            } else {
+                // it's fine
+                boolean b = true;
             }
         } catch (Exception e) {
             throw propagate(e);

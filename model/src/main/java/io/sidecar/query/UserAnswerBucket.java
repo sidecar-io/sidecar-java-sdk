@@ -23,9 +23,13 @@ import java.util.UUID;
 
 public class UserAnswerBucket<T> {
 
-    private final UUID userId;
-    private final String deviceId;
-    private final T answer;
+    private  UUID userId;
+    private  String deviceId;
+    private  T answer;
+
+    // for jackson only
+    public UserAnswerBucket() {
+    }
 
     public UserAnswerBucket(UUID userId, String deviceId, T answer) {
         checkNotNull(answer);
